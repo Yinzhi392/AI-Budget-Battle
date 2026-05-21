@@ -2,13 +2,13 @@
 
 ## 1. Recommendation Summary
 
-Use a **Next.js + Supabase + OpenAI + Vercel** stack.
+Use a **Next.js + mock-first providers + Supabase + OpenAI-compatible AI provider + Vercel** stack.
 
 This is the best fit for AI Budget Battle because the MVP needs to move fast, support authenticated and anonymous users, store structured spending reports, process uploaded screenshots, call AI models safely from the server, and deploy with low operational overhead.
 
 The guiding principle is:
 
-> Keep the product monolithic, typed, and serverless-first until real usage proves which parts need more infrastructure.
+> Keep the product monolithic, typed, mock-first, and serverless-first until real usage proves which parts need more infrastructure. Build the full flow with mock providers before requiring Supabase or real AI access.
 
 ## 2. Recommended Stack
 
@@ -18,17 +18,18 @@ The guiding principle is:
 | Styling | Tailwind CSS + shadcn/ui | Fast UI development, consistent components, easy to customize for cyber visual style. |
 | Animation | Framer Motion / Motion | Good fit for Wrapped-style story transitions and generation animations. |
 | Backend | Next.js Route Handlers / Server Actions | Simple MVP backend without a separate API service. Keeps business logic close to the app. |
-| Database | Supabase Postgres | Reliable relational model for users, sessions, transactions, reports, benchmarks, and share cards. |
+| Package Manager | pnpm | Fast, stable dependency management for the Next.js workspace. |
+| Persistence | Mock provider first, then Supabase Postgres | Mock persistence enables the full MVP flow before external setup; Supabase later provides reliable relational storage. |
 | Auth | Supabase Auth | Supports email login and OAuth. Email flow can support QQ Mail, 163, Outlook, Gmail, and school emails. |
 | File Storage | Supabase Storage | Temporary screenshot storage and generated share card storage. |
-| AI | OpenAI API | Handles screenshot understanding, structured transaction extraction, personality generation, roast, and report JSON. |
+| AI | Mock AI first, then OpenAI-compatible server-side provider | Mock AI keeps local development unblocked; real AI is isolated behind a provider switch. |
 | AI Output | Structured Outputs with JSON Schema | Prevents unstable free-form AI responses and makes frontend rendering reliable. |
 | Charts | Recharts | Simple category breakdowns and lightweight dashboard charts. |
 | Share Card Export | HTML/CSS templates + html-to-image | Fastest way to export Xiaohongshu and WeChat-ready static cards from existing UI components. |
 | Validation | Zod | Shared validation for AI JSON, forms, route inputs, and database payloads. |
 | Forms | React Hook Form + Zod resolver | Reliable editable confirmation table and manual input forms. |
 | Deployment | Vercel | Best default deployment path for Next.js, preview deployments, environment variables, and serverless functions. |
-| Analytics | PostHog or Vercel Analytics | Track funnel completion, export rate, login conversion, and repeat generation. |
+| Analytics | Vercel Analytics | MVP analytics choice. Track funnel completion, export rate, login conversion, and repeat generation without adding a second analytics product. |
 | Error Tracking | Sentry | Capture OCR/AI failures, frontend crashes, and server errors. |
 
 ## 3. Architecture
@@ -44,16 +45,21 @@ Next.js App
   ├─ Supabase client/server adapters
   └─ Share card renderer
 
+Mock Providers
+  ├─ Mock persistence
+  ├─ Mock auth
+  └─ Mock AI extraction/report generation
+
 Supabase
   ├─ Auth
   ├─ Postgres
   ├─ Row Level Security
   └─ Storage
 
-OpenAI API
-  ├─ Screenshot transaction extraction
-  ├─ Report generation
-  └─ Safety-aware roast generation
+AI Provider Boundary
+  ├─ Mock provider by default
+  ├─ Optional server-side OpenAI provider
+  └─ Future compatible provider if OpenAI access is blocked or unreliable
 
 Vercel
   ├─ Web deployment
@@ -61,7 +67,7 @@ Vercel
   └─ Serverless execution
 ```
 
-This keeps the MVP simple: no separate backend server, no queue, no microservices, and no premature mobile app.
+This keeps the MVP simple: no separate backend server, no queue, no microservices, no premature mobile app, and no dependency on external services before the core flow is proven.
 
 ## 4. Frontend Stack
 
@@ -185,25 +191,25 @@ Use **Supabase Storage** buckets:
 
 ## 7. AI and OCR Approach
 
-For MVP, use **OpenAI vision-capable models** for screenshot understanding instead of adding a separate OCR provider immediately.
+For MVP development, use **mock AI by default** and keep real OpenAI vision-capable extraction behind a server-side provider switch.
 
 Why:
 
-- Simpler integration
-- Better at messy screenshots and mixed Chinese/English context
-- Can extract directly into structured JSON
-- Reduces one external dependency during MVP
+- Mock AI lets the UI, schema, and full flow ship faster
+- Real OpenAI can still handle messy screenshots and mixed Chinese/English context when enabled
+- Provider isolation protects the app if OpenAI access is blocked or unreliable for China-related operations
+- All providers must return the same structured JSON
 
 Recommended AI flow:
 
-1. User uploads screenshot.
-2. Server sends image to OpenAI extraction prompt.
-3. OpenAI returns structured transaction candidates.
+1. User uploads screenshot or enters transactions manually.
+2. Server chooses mock or real extraction provider by environment configuration.
+3. Provider returns structured transaction candidates.
 4. Zod validates the JSON.
 5. User confirms or corrects the rows.
-6. Server sends confirmed transactions to report generation prompt.
-7. OpenAI returns structured report JSON.
-8. Zod validates again before saving.
+6. Server chooses mock or real report provider by environment configuration.
+7. Provider returns structured report JSON.
+8. Zod validates again before saving or rendering.
 
 Fallback strategy:
 
@@ -276,14 +282,15 @@ Use **Supabase Auth**.
 
 MVP behavior:
 
-- Anonymous users can complete one report.
-- Login is required to save reports, export cards, and view history.
-- Email magic link or verification code should support mainstream email providers, including QQ Mail, 163, Outlook, Gmail, and school domains.
-- Google OAuth can be available but should not be the only login path.
+- Anonymous users can complete one report and export one watermarked share card.
+- Login is required to save reports, remove watermark, export additional cards, generate repeated reports, and view history.
+- First version uses Email magic link plus Google OAuth. Verification-code login is future scope.
+- Email magic link should support mainstream email providers, including QQ Mail, 163, Outlook, Gmail, and school domains.
+- Anonymous state uses a session cookie plus a session record; refresh should not lose state, but cross-browser tracking is not required.
 
 ## 11. Analytics and Observability
 
-Use **PostHog** if product analytics depth matters, or **Vercel Analytics** if you want the lowest setup cost.
+Use **Vercel Analytics** for MVP. Defer any deeper analytics product until the product needs more detailed funnel instrumentation.
 
 Track:
 
@@ -335,8 +342,6 @@ SUPABASE_SERVICE_ROLE_KEY=
 OPENAI_API_KEY=
 NEXT_PUBLIC_APP_URL=
 SENTRY_DSN=
-POSTHOG_KEY=
-POSTHOG_HOST=
 ```
 
 Keep service-role keys server-only.
@@ -377,18 +382,21 @@ These can be added later if usage proves the need.
 
 ## 16. Implementation Order
 
-1. Next.js app scaffold with TypeScript, Tailwind, shadcn/ui.
-2. Supabase setup: Auth, Postgres schema, Storage buckets, RLS.
+1. Next.js app scaffold with TypeScript, pnpm, Tailwind, shadcn/ui.
+2. Mock persistence, mock auth, mock AI schemas and providers.
 3. Anonymous session and region/currency flow.
-4. Upload page and manual transaction input.
-5. AI screenshot extraction route with structured output.
+4. Upload page and manual transaction input, with manual input as guaranteed fallback.
+5. Mock/real AI screenshot extraction boundary.
 6. Confirmation table.
-7. AI report generation route with structured output.
+7. Mock/real AI report generation boundary.
 8. Cyber Wrapped result page.
-9. Share card templates and export.
-10. Save/export login gate.
-11. History page.
-12. Analytics, Sentry, and core tests.
+9. Share card templates, watermark rules, and export.
+10. Auth gate with Email magic link and Google OAuth boundary.
+11. History page and lightweight dashboard.
+12. Supabase integration behind existing provider boundaries.
+13. Optional real OpenAI provider enablement.
+14. Vercel Analytics, Sentry, and core tests.
+15. First real Vercel deployment after the core local flow works.
 
 ## 17. References
 

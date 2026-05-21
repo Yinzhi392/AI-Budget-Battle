@@ -98,7 +98,7 @@ The MVP also supports selecting other regions and currencies, but those flows us
 
 8. **Share and Save**
    - User chooses Xiaohongshu or WeChat card templates.
-   - Export/save/history actions trigger login if the user is anonymous.
+   - Anonymous users can export one watermarked card. Save, history, watermark removal, extra exports, and repeated report generation trigger login.
 
 ## 5. Core Modules
 
@@ -214,7 +214,7 @@ Cards may include:
 - Product watermark
 - QR code or invite link
 
-Cards should hide raw merchants and precise transaction details by default.
+Cards should hide raw merchants and precise transaction details by default. Anonymous exports must include a product watermark.
 
 ## 6. AI Output Contract
 
@@ -390,6 +390,7 @@ Rules:
 - Raw screenshots are temporary and should not be stored long-term.
 - Confirmed structured transactions may be stored for saved reports.
 - AI reports and share cards may be stored for logged-in users.
+- Raw screenshots are marked deletable after analysis and must be removed no later than 24 hours after upload.
 - Users can delete historical reports.
 - Sharing cards hide merchants and precise transaction details by default.
 - Benchmark outputs are generated from preset profiles unless future real aggregation is implemented.
@@ -398,17 +399,22 @@ Rules:
 
 The MVP uses an anonymous-first experience.
 
-Users can generate a report without logging in. Login is prompted when they:
+Users can generate one report without logging in. Anonymous users may export one watermarked share card. Login is prompted when they:
 
 - Save a report
-- Export a share card
+- Remove a watermark
+- Export additional share cards
 - View history
 - Generate multiple reports across sessions
 
-Supported login methods:
+Supported MVP login methods:
 
 - Google OAuth
-- Email magic link or verification code
+- Email magic link
+
+Future login method:
+
+- Email verification code
 
 Email login must support mainstream email providers, including QQ Mail, 163, Outlook, Gmail, and school email domains.
 
@@ -501,7 +507,7 @@ Key elements:
 - Platform selector
 - Template selector
 - Field visibility controls
-- Export button
+- Export button with one anonymous watermarked export allowed
 
 ### Login Page
 

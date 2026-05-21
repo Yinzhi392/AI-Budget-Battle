@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050607;
+  --foreground: #f4f7fb;
+  --muted: #0f1418;
+  --neon-green: #61f2a2;
+  --electric-blue: #47c8ff;
+  --signal-orange: #ff9f43;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-neon-green: var(--neon-green);
+  --color-electric-blue: var(--electric-blue);
+  --color-signal-orange: var(--signal-orange);
+  --font-sans: ui-sans-serif, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Noto Sans CJK SC", sans-serif;
+  --font-mono: "SFMono-Regular", "Roboto Mono", "Cascadia Code", monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: ui-sans-serif, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Noto Sans CJK SC", sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(97, 242, 162, 0.35);
+  color: #ffffff;
+}
+
+.cyber-grid {
+  background-image:
+    linear-gradient(rgba(71, 200, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(97, 242, 162, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 20% 8%, rgba(97, 242, 162, 0.16), transparent 32%),
+    radial-gradient(circle at 86% 76%, rgba(255, 159, 67, 0.14), transparent 30%);
+  background-size: 44px 44px, 44px 44px, 100% 100%, 100% 100%;
+  mask-image: linear-gradient(to bottom, black, transparent 92%);
+}
+
+.scanline {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.04) 0,
+    rgba(255, 255, 255, 0.04) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+  opacity: 0.16;
+}
