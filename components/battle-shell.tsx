@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, CircleDot, ShieldCheck, Sparkles } from "lucide-react";
+import type { ReactNode } from "react";
 import { battleFlow, type RoutePageContent } from "@/lib/route-content";
 import { cn } from "@/lib/utils";
 
@@ -12,9 +13,21 @@ const accentClasses = {
 
 type BattleShellProps = {
   content: RoutePageContent;
+  children?: ReactNode;
+  showActions?: boolean;
+  showStatusBadge?: boolean;
+  showHighlights?: boolean;
+  showSidebar?: boolean;
 };
 
-export function BattleShell({ content }: BattleShellProps) {
+export function BattleShell({
+  content,
+  children,
+  showActions = true,
+  showStatusBadge = true,
+  showHighlights = true,
+  showSidebar = true,
+}: BattleShellProps) {
   return (
     <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
       <div className="cyber-grid pointer-events-none absolute inset-0" />
@@ -48,12 +61,21 @@ export function BattleShell({ content }: BattleShellProps) {
           </nav>
         </header>
 
-        <div className="grid flex-1 items-center gap-8 py-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.75fr)] lg:py-14">
+        <div
+          className={cn(
+            "grid flex-1 items-center gap-8 py-10 lg:py-14",
+            showSidebar
+              ? "lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.75fr)]"
+              : "lg:grid-cols-1",
+          )}
+        >
           <section className="max-w-4xl">
-            <div className="mb-6 inline-flex items-center gap-2 border border-orange-300/30 bg-orange-300/10 px-3 py-2 text-xs font-semibold uppercase text-orange-100">
-              <CircleDot className="size-4" aria-hidden="true" />
-              {content.statusLabel}
-            </div>
+            {showStatusBadge ? (
+              <div className="mb-6 inline-flex items-center gap-2 border border-orange-300/30 bg-orange-300/10 px-3 py-2 text-xs font-semibold uppercase text-orange-100">
+                <CircleDot className="size-4" aria-hidden="true" />
+                {content.statusLabel}
+              </div>
+            ) : null}
 
             <p className="mb-4 text-sm font-semibold uppercase text-emerald-300">
               {content.eyebrow}
@@ -65,69 +87,82 @@ export function BattleShell({ content }: BattleShellProps) {
               {content.description}
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              {content.primaryAction ? (
-                <Link
-                  href={content.primaryAction.href}
-                  className="inline-flex min-h-12 items-center justify-center gap-2 bg-emerald-300 px-5 py-3 text-sm font-bold text-zinc-950 transition hover:bg-emerald-200"
-                >
-                  {content.primaryAction.label}
-                  <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
-              ) : null}
-              {content.secondaryAction ? (
-                <Link
-                  href={content.secondaryAction.href}
-                  className="inline-flex min-h-12 items-center justify-center border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-bold text-white transition hover:border-white/35 hover:bg-white/[0.08]"
-                >
-                  {content.secondaryAction.label}
-                </Link>
-              ) : null}
-            </div>
+            {showActions ? (
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                {content.primaryAction ? (
+                  <Link
+                    href={content.primaryAction.href}
+                    className="inline-flex min-h-12 items-center justify-center gap-2 bg-emerald-300 px-5 py-3 text-sm font-bold text-zinc-950 transition hover:bg-emerald-200"
+                  >
+                    {content.primaryAction.label}
+                    <ArrowRight className="size-4" aria-hidden="true" />
+                  </Link>
+                ) : null}
+                {content.secondaryAction ? (
+                  <Link
+                    href={content.secondaryAction.href}
+                    className="inline-flex min-h-12 items-center justify-center border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-bold text-white transition hover:border-white/35 hover:bg-white/[0.08]"
+                  >
+                    {content.secondaryAction.label}
+                  </Link>
+                ) : null}
+              </div>
+            ) : null}
 
-            <ul className="mt-8 grid gap-3 text-sm text-zinc-300 sm:grid-cols-3">
-              {content.highlights.map((highlight) => (
-                <li
-                  key={highlight}
-                  className="flex min-h-14 items-center gap-3 border border-white/10 bg-zinc-950/50 px-4 py-3"
-                >
-                  <ShieldCheck className="size-4 shrink-0 text-sky-300" aria-hidden="true" />
-                  <span>{highlight}</span>
-                </li>
-              ))}
-            </ul>
+            {children ? <div className="mt-8">{children}</div> : null}
+
+            {showHighlights ? (
+              <ul
+                className={cn(
+                  "mt-8 grid gap-3 text-sm text-zinc-300",
+                  content.highlights.length === 1 ? "sm:grid-cols-1" : "sm:grid-cols-3",
+                )}
+              >
+                {content.highlights.map((highlight) => (
+                  <li
+                    key={highlight}
+                    className="flex min-h-14 items-center gap-3 border border-white/10 bg-zinc-950/50 px-4 py-3"
+                  >
+                    <ShieldCheck className="size-4 shrink-0 text-sky-300" aria-hidden="true" />
+                    <span>{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </section>
 
-          <aside className="grid gap-4">
-            <div className="border border-white/10 bg-zinc-950/72 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.38)] backdrop-blur">
-              <p className="text-xs font-semibold uppercase text-zinc-500">
-                Flow status
-              </p>
-              <p className="mt-2 text-2xl font-black text-white">MVP Route Map</p>
-              <div className="mt-5 grid gap-3">
-                {content.panels.map((panel) => (
-                  <div
-                    key={panel.label}
-                    className={cn(
-                      "min-h-24 border p-4",
-                      accentClasses[panel.accent],
-                    )}
-                  >
-                    <p className="text-xs font-semibold uppercase opacity-70">
-                      {panel.label}
-                    </p>
-                    <p className="mt-2 text-xl font-black leading-tight">
-                      {panel.value}
-                    </p>
-                  </div>
-                ))}
+          {showSidebar ? (
+            <aside className="grid gap-4">
+              <div className="border border-white/10 bg-zinc-950/72 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.38)] backdrop-blur">
+                <p className="text-xs font-semibold uppercase text-zinc-500">
+                  Flow status
+                </p>
+                <p className="mt-2 text-2xl font-black text-white">MVP Route Map</p>
+                <div className="mt-5 grid gap-3">
+                  {content.panels.map((panel) => (
+                    <div
+                      key={panel.label}
+                      className={cn(
+                        "min-h-24 border p-4",
+                        accentClasses[panel.accent],
+                      )}
+                    >
+                      <p className="text-xs font-semibold uppercase opacity-70">
+                        {panel.label}
+                      </p>
+                      <p className="mt-2 text-xl font-black leading-tight">
+                        {panel.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            <div className="border border-sky-300/20 bg-sky-300/10 p-4 text-sm leading-7 text-sky-100">
-              当前页面只承载 Task 3 的骨架和视觉基调，业务状态、表单、AI 和持久化会在后续任务接入。
-            </div>
-          </aside>
+              <div className="border border-sky-300/20 bg-sky-300/10 p-4 text-sm leading-7 text-sky-100">
+                当前页面只承载 Task 3 的骨架和视觉基调，业务状态、表单、AI 和持久化会在后续任务接入。
+              </div>
+            </aside>
+          ) : null}
         </div>
       </section>
     </main>

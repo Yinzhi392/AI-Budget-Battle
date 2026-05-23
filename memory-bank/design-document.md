@@ -10,12 +10,16 @@ The product is not a traditional budgeting app. Its main promise is:
 
 The MVP should feel closer to a cyber version of Spotify Wrapped than a banking dashboard. The goal is to validate whether students enjoy, trust, and share AI-generated spending identity reports.
 
+Participation and shareability are more important than audit-level financial accuracy. The product should not make users feel they must collect every daily bill screenshot. A useful MVP can work from a monthly summary screenshot, a few representative daily screenshots, or light manual additions, then present the result as an entertaining and explainable estimate rather than an exact accounting record.
+
+中文产品原则：上传必须低摩擦；月度账单分析、少量日账单截图和手动补充都可以进入分析；AI 需要做消费分类、多来源对齐、数据合成和去重；不完整数据必须以估算和置信度方式呈现。
+
 ## 2. Target Users
 
 ### Primary Users
 
 - Chinese mainland university students
-- Chinese-speaking students in overseas or international contexts
+- Chinese-speaking students studying abroad
 - Students who already share lifestyle, spending, study, food, shopping, and self-improvement content on social platforms
 
 ### Default Scenario
@@ -27,7 +31,7 @@ The default product experience prioritizes Chinese mainland student spending beh
 - Language: Chinese-first
 - Tone: meme-aware, funny, slightly savage, but not humiliating
 
-The MVP also supports selecting other regions and currencies, but those flows use broader student-spending categories and lighter localization.
+The MVP supports two student setup paths: China mainland students and students studying abroad. Students studying abroad choose their country or region and currency after selecting the study-abroad path; do not split them into separate "overseas Chinese" and "international student" user categories.
 
 ## 3. MVP Scope
 
@@ -72,7 +76,8 @@ The MVP also supports selecting other regions and currencies, but those flows us
 
 2. **Select Region and Currency**
    - Default: China mainland + CNY.
-   - Users can choose other regions and currencies.
+   - Users choose either China mainland student or study-abroad student.
+   - Study-abroad students then choose a country or region from a global list and choose the relevant currency.
    - This choice controls category defaults, amount formatting, benchmark profile, and AI language context.
 
 3. **Select Analysis Period**
@@ -80,13 +85,18 @@ The MVP also supports selecting other regions and currencies, but those flows us
    - The selected period is shown throughout the report and sharing card.
 
 4. **Upload Screenshots and Add Transactions**
-   - Users upload spending screenshots from payment apps, banking apps, or budgeting tools.
-   - Users can manually add transactions when screenshots are incomplete or unavailable.
+   - Users can upload a small number of representative screenshots instead of every daily bill.
+   - Supported inputs include monthly analysis screenshots, daily transaction screenshots, category summary screenshots, and light manual additions.
+   - The upload flow should encourage low-friction participation and must not imply that complete daily screenshots are required.
+   - Users can manually add transactions or category-level hints when screenshots are incomplete or unavailable.
 
 5. **AI Recognition and Confirmation**
-   - AI/OCR extracts candidate transaction fields.
-   - User reviews, edits, deletes, and adds transaction items.
-   - Only confirmed data enters analysis.
+   - AI/OCR extracts candidate transaction fields and category summary fields.
+   - AI classifies merchant or note text into spending categories, for example recognizing "一点点 10 元" as a milk tea expense.
+   - AI aligns and merges multiple input sources, such as one Alipay monthly analysis screenshot plus several WeChat daily bill screenshots.
+   - The system marks confidence, possible duplicates, and estimate-based aggregates clearly.
+   - User reviews, edits, deletes, and adds transaction items or category summaries.
+   - Only confirmed or accepted estimated data enters analysis.
 
 6. **Cyber Wrapped Generation**
    - A cyber scanning/generation screen builds anticipation.
@@ -116,7 +126,17 @@ The MVP should prioritize China mainland defaults while allowing broader Chinese
 
 ### 5.2 Screenshot Upload and OCR Recognition
 
-Users may upload multiple screenshots. The system attempts to extract:
+The upload experience prioritizes speed and participation. Users may upload one monthly summary screenshot, a few representative transaction screenshots, or a mix of payment-app screenshots. The product must not require a complete screenshot set for every day in the analysis period.
+
+The system attempts to detect the screenshot type:
+
+- Monthly or period summary screenshot
+- Daily transaction list screenshot
+- Individual transaction screenshot
+- Category analysis screenshot
+- Unknown screenshot requiring manual fallback
+
+From detailed transaction screenshots, the system attempts to extract:
 
 - Amount
 - Time
@@ -125,7 +145,24 @@ Users may upload multiple screenshots. The system attempts to extract:
 - Currency
 - Confidence score
 
-Low-confidence fields must be visibly marked in the confirmation table.
+From summary screenshots, the system attempts to extract:
+
+- Period or month
+- Category totals
+- Merchant or category labels
+- Currency
+- Source platform
+- Confidence score
+
+AI must perform category classification, not only raw OCR. Examples:
+
+- "一点点 10 元" should map to milk tea.
+- "美团外卖 32 元" should map to food delivery.
+- "腾讯视频会员" should map to subscriptions.
+
+When users provide mixed sources, such as Alipay monthly analysis plus WeChat daily bills, the system should align them by period, source, category, amount, and merchant/note where possible. It should identify likely duplicates and avoid presenting estimated aggregates as exact transactions.
+
+Low-confidence fields, possible duplicates, source conflicts, and estimated aggregate rows must be visibly marked in the confirmation experience.
 
 ### 5.3 Manual Input and Confirmation Table
 
@@ -134,8 +171,11 @@ The confirmation table is the data-quality gate.
 Users can:
 
 - Add a transaction
+- Add or adjust category-level totals
 - Edit amount, category, merchant/note, and time
 - Delete incorrect recognition results
+- Accept or reject estimated aggregate rows
+- Review possible duplicate or overlapping rows
 - Confirm all records before generating a report
 
 Required fields:
@@ -150,10 +190,15 @@ Optional fields:
 - Merchant
 - Note
 - Source image reference
+- Source type
+- Confidence
+- Duplicate or estimated-data flag
 
 ### 5.4 AI Analysis Engine
 
 The AI engine receives confirmed structured data and returns structured JSON, not free-form text.
+
+The AI engine may receive a mix of confirmed transactions and confirmed category or period aggregates. It must treat aggregate data as estimate-based input and should not generate copy that implies precise accounting when the source data is incomplete.
 
 It generates:
 
@@ -655,4 +700,3 @@ Design principles:
 - Toxicity safety before viral shock value.
 - Minimum data retention before convenience.
 - Share cards before in-app social networks.
-

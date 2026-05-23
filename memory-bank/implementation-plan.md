@@ -42,8 +42,15 @@
 
 ## Locked Implementation Defaults
 
-- Product flow priority: manual transaction input must complete the full MVP path even if screenshot extraction fails or is disabled.
-- Screenshot scope: first version must include screenshot upload UI plus mock/real extraction provider boundaries; the manual input path is the guaranteed fallback.
+- Product flow priority: low-friction participation and shareability come before audit-level accuracy. The MVP should make users willing to participate quickly, not force them to collect every daily bill screenshot.
+- 中文约束：低摩擦参与优先，不要求完整逐日截图；月度账单、代表性截图、手动补充都可以作为估算输入。
+- Estimate-first analysis is acceptable. The product may generate an entertaining, explainable spending personality report from incomplete inputs as long as confidence, estimated data, and limitations are visible.
+- Manual transaction input must complete the full MVP path if screenshot extraction fails or is disabled, but manual entry is a fallback rather than the primary desired behavior.
+- Screenshot scope: first version must include screenshot upload UI plus mock/real extraction provider boundaries. The upload UI should support quick upload of a monthly summary screenshot, a few representative daily screenshots, category summary screenshots, and optional manual additions.
+- AI extraction must classify spending categories from merchant or note text, for example mapping "一点点 10 元" to milk tea spending.
+- Multi-source alignment is required for the extraction boundary. Mixed sources such as Alipay monthly analysis screenshots and WeChat daily bill screenshots must be alignable by period, source, category, amount, and merchant/note where possible.
+- Aggregation and deduplication must preserve uncertainty. The system should track source type, confidence, possible duplicate status, and whether a row is estimated from a summary screenshot.
+- 中文约束：AI 必须支持分类、对齐、合成、去重和估算标记，不得把估算数据伪装成精确账单。
 - AI provider: use mock AI by default in local development and tests. Real OpenAI calls are a later provider switch.
 - China access risk: because OpenAI may not be directly accessible for some users or operators in China, keep AI calls server-side and isolate them behind a provider interface. If OpenAI access is blocked or unreliable, the implementation must be able to switch to a compatible server-side provider without changing UI flows.
 - Auth: first version uses Email magic link plus Google OAuth. Verification-code login is future scope.
@@ -151,6 +158,7 @@ Instructions:
 - Create mock AI extraction provider that returns plausible transaction candidates from uploaded screenshot metadata.
 - Create mock AI report provider that returns a complete Cyber Wrapped report matching the schema.
 - Keep provider interfaces compatible with later Supabase and OpenAI implementations.
+- Note: Task 4 creates the first provider boundary. Later tasks must extend this boundary to support summary screenshot source types, category or period aggregate candidates, dedupe keys, confidence, possible-overlap flags, and aggregation mode. Task 4 does not need to fully implement those concepts if it has already been completed.
 
 Completion criteria:
 
@@ -177,7 +185,9 @@ Instructions:
 
 - Create an anonymous session on first battle start using a session cookie plus mock session record.
 - Default to China mainland and CNY.
-- Allow alternate region and currency choices for overseas or international Chinese-speaking students.
+- Keep student classification to two paths: China mainland student and study-abroad student.
+- For study-abroad students, show country/region and currency selectors after the study-abroad path is selected.
+- Do not split study-abroad users into separate overseas Chinese student and international student categories.
 - Add period choices for this week, this month, and custom period.
 - Persist setup choices across route transitions and refreshes.
 - Prevent upload access without valid session, region, currency, and period.
@@ -202,27 +212,33 @@ Memory updates:
 
 ## Task 6: Implement Upload UI and Manual Transaction Input Fallback
 
-Goal: Ensure users can complete data entry even without OCR.
+Goal: Ensure users can complete data entry quickly even without complete screenshots or OCR.
 
 Instructions:
 
 - Build screenshot upload UI with temporary upload status and privacy note.
+- Present quick upload as the preferred path: one monthly analysis screenshot, a few representative daily screenshots, or category summary screenshots.
+- Do not ask users to upload every daily bill screenshot.
 - Build manual transaction input with amount, currency, category, time or period, and optional merchant or note.
+- Add a lightweight way to manually enter category-level totals or hints when users do not want to enter individual transactions.
 - Ensure category options reflect selected region and default China mainland categories.
-- Keep manual input as the guaranteed path to report generation.
-- Uploaded screenshot metadata should feed the mock extraction provider, but failed extraction must not block manual input.
+- Keep manual input as the guaranteed fallback path to report generation.
+- Uploaded screenshot metadata should feed the mock extraction provider, but failed extraction must not block manual input or category-summary input.
+- UI copy must frame the result as an estimated entertainment/personality analysis when the user provides incomplete data.
 
 Completion criteria:
 
 - Users can upload one or more screenshots in the UI.
-- Users can manually add valid transactions.
+- Users can upload a monthly summary screenshot without being asked for every daily screenshot.
+- Users can manually add valid transactions or category-level totals.
 - Invalid manual entries show clear errors.
 - A user can proceed with manual entries even when extraction is unavailable.
+- A user can proceed with incomplete screenshot data when enough estimated input exists for a report.
 
 Verification:
 
-- Add unit tests for manual transaction validation.
-- Add Playwright tests for manual-only flow and screenshot-upload-with-manual-fallback flow.
+- Add unit tests for manual transaction and category-total validation.
+- Add Playwright tests for quick monthly-summary upload, manual-only fallback, and screenshot-upload-with-manual-fallback flow.
 - Run `pnpm lint`, `pnpm typecheck`, `pnpm test`, and upload-flow Playwright tests.
 
 Memory updates:
@@ -240,6 +256,11 @@ Instructions:
 - Add a server-only real OpenAI extraction provider behind environment configuration, but keep it disabled by default.
 - Keep all AI calls server-side.
 - Validate all extraction outputs with Zod.
+- AI extraction must classify merchant or note text into categories, for example recognizing "一点点 10 元" as milk tea spending.
+- AI extraction must support multiple source types: monthly summary screenshots, daily transaction list screenshots, individual transaction screenshots, category analysis screenshots, and manual input.
+- AI extraction must output both transaction candidates and category or period aggregate candidates when the source image is a summary rather than a transaction list.
+- Add alignment and synthesis behavior for mixed sources. For example, if a user uploads one Alipay monthly analysis screenshot and several WeChat daily bill screenshots, the provider should preserve source information and mark likely overlaps or duplicates instead of blindly summing every detected amount.
+- Extraction outputs must include confidence and enough metadata for later confirmation: source type, source platform when known, possible duplicate or overlap status, and whether a row is estimate-based.
 - If OpenAI is unavailable, blocked, or returns invalid output, fall back to manual input and show a recoverable error.
 - Document that China access risk is handled by server-side provider isolation and can later support another compatible AI provider.
 
@@ -248,10 +269,13 @@ Completion criteria:
 - Mock extraction works by default.
 - Real extraction can be configured later without UI rewrites.
 - Invalid extraction output never reaches confirmation as trusted data.
+- Merchant/category classification works for common Chinese student spending labels.
+- Summary screenshot extraction produces aggregate candidates without pretending they are exact transactions.
+- Mixed-source extraction preserves source and confidence metadata for confirmation.
 
 Verification:
 
-- Add tests for provider selection, successful mock extraction, invalid output rejection, and real-provider unavailable fallback.
+- Add tests for provider selection, successful mock extraction, merchant/category classification, summary aggregate extraction, mixed-source dedupe metadata, invalid output rejection, and real-provider unavailable fallback.
 - Add Playwright test where extraction fails and manual input still completes.
 - Run `pnpm lint`, `pnpm typecheck`, `pnpm test`, and targeted Playwright tests.
 
@@ -262,26 +286,30 @@ Memory updates:
 
 ## Task 8: Implement Transaction Confirmation Table
 
-Goal: Make user confirmation the data-quality gate before report generation.
+Goal: Make user confirmation the data-quality gate before report generation without forcing exact bill reconstruction.
 
 Instructions:
 
 - Build editable rows for OCR candidates and manual entries.
+- Support category or period aggregate rows extracted from monthly or category summary screenshots.
 - Allow editing amount, currency, category, merchant or note, and time.
 - Allow deleting incorrect rows and adding missing rows.
 - Show confidence indicators for AI-extracted rows.
-- Require amount, currency, category, and time or period before confirmation.
-- Save only confirmed transaction items for report generation.
+- Show source type, estimated-data markers, and possible duplicate or overlap markers.
+- Do not require users to confirm every individual transaction if they uploaded summary screenshots. They may confirm category-level estimates.
+- Require amount, currency, category, and time or period before confirmation for both transaction rows and aggregate rows.
+- Save only confirmed transaction items and accepted aggregate rows for report generation.
 
 Completion criteria:
 
-- Users can correct extracted or manual rows before analysis.
+- Users can correct extracted, manual, and aggregate rows before analysis.
 - Invalid rows block report generation.
-- Confirmed rows become the only report input.
+- Confirmed rows and accepted aggregate rows become the only report input.
+- The UI distinguishes exact transactions from estimated aggregate data.
 
 Verification:
 
-- Add unit tests for row validation and confirmation eligibility.
+- Add unit tests for row validation, aggregate validation, duplicate/overlap flags, and confirmation eligibility.
 - Add interaction tests for edit, delete, add, and confirm behavior.
 - Add Playwright test for correcting a low-confidence row and confirming valid data.
 - Run `pnpm lint`, `pnpm typecheck`, `pnpm test`, and confirmation-flow Playwright tests.
@@ -466,7 +494,7 @@ Instructions:
 - Implement anonymous session cookie plus Supabase session record.
 - Preserve mock providers for tests and local fallback.
 - Keep service-role operations server-side only.
-- Seed China mainland CNY benchmark profiles and broad overseas Chinese-speaking student profiles.
+- Seed China mainland CNY benchmark profiles and broad study-abroad student profiles.
 
 Completion criteria:
 

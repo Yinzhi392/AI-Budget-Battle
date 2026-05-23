@@ -32,13 +32,13 @@ export const routePages = {
     statusLabel: "功能骨架",
     primaryAction: {
       label: "开始战斗",
-      href: "/battle/region-currency",
+      href: "/battle/start",
     },
     secondaryAction: {
       label: "查看历史",
       href: "/history",
     },
-    highlights: ["中文优先", "匿名先体验", "分享卡默认隐藏商户明细"],
+    highlights: ["Developer: Yinzhi"],
     panels: [
       { label: "默认场景", value: "中国大陆学生 / CNY", accent: "green" },
       { label: "报告形态", value: "Cyber Wrapped 故事流", accent: "blue" },
@@ -49,7 +49,7 @@ export const routePages = {
     eyebrow: "Step 01",
     title: "选择战区和货币",
     description:
-      "默认使用中国大陆和人民币，后续会根据选择切换分类、金额格式和基准语境。",
+      "默认使用中国大陆和人民币；留学生可继续选择所在国家或地区与使用货币。",
     status: "placeholder",
     statusLabel: "功能骨架",
     primaryAction: {
@@ -60,7 +60,7 @@ export const routePages = {
       label: "返回首页",
       href: "/",
     },
-    highlights: ["中国大陆 / CNY", "海外中文学生", "分类预览待接入"],
+    highlights: ["中国大陆学生", "留学生", "全球国家与地区"],
     panels: [
       { label: "默认货币", value: "CNY", accent: "green" },
       { label: "分类语境", value: "奶茶 / 外卖 / 校园餐", accent: "blue" },
@@ -93,7 +93,7 @@ export const routePages = {
     eyebrow: "Step 03",
     title: "上传账单或手动输入",
     description:
-      "页面骨架包含截图上传入口和手动输入兜底路径，真实表单会在后续任务接入。",
+      "优先支持月度分析图、代表性截图和分类汇总；也可以直接手动添加交易或分类总额。",
     status: "placeholder",
     statusLabel: "功能骨架",
     primaryAction: {
@@ -135,9 +135,9 @@ export const routePages = {
   },
   generating: {
     eyebrow: "Step 05",
-    title: "正在生成战报",
+    title: "准备生成战报",
     description:
-      "赛博扫描动画和进度消息会在这里承接确认后的等待状态。",
+      "点击下方按钮开始生成，生成完成后会自动打开战报页。",
     status: "placeholder",
     statusLabel: "功能骨架",
     primaryAction: {
