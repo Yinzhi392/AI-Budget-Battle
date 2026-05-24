@@ -1,4 +1,5 @@
 import type { AiReport, ShareCard } from "@/types/domain";
+import { getPersonaDisplayTitle, getPersonaImage, type PersonaImage } from "@/lib/persona-images";
 
 export type ShareCardViewModel = {
   templateType: ShareCard["templateType"];
@@ -6,6 +7,7 @@ export type ShareCardViewModel = {
   label: string;
   aspectRatio: string;
   personalityTitle: string;
+  personaImage?: PersonaImage;
   roastLine: string;
   highlight: string;
   periodLabel: string;
@@ -26,6 +28,8 @@ export function buildShareCardViewModels(
   const highlight =
     report.benchmarkInsights[0]?.text ??
     `财务生命值 ${report.scores.financialHealth}`;
+  const personalityTitle = getPersonaDisplayTitle(report.personality.title);
+  const personaImage = getPersonaImage(report.personality.title);
 
   return [
     {
@@ -33,7 +37,8 @@ export function buildShareCardViewModels(
       platform: "xiaohongshu",
       label: "小红书方图",
       aspectRatio: "1 / 1",
-      personalityTitle: report.personality.title,
+      personalityTitle,
+      personaImage,
       roastLine: report.roast.short,
       highlight,
       periodLabel: options.periodLabel,
@@ -48,7 +53,8 @@ export function buildShareCardViewModels(
       platform: "xiaohongshu",
       label: "小红书竖图",
       aspectRatio: "3 / 4",
-      personalityTitle: report.personality.title,
+      personalityTitle,
+      personaImage,
       roastLine: report.roast.short,
       highlight,
       periodLabel: options.periodLabel,
@@ -62,8 +68,9 @@ export function buildShareCardViewModels(
       templateType: "wechat_moments",
       platform: "wechat",
       label: "微信朋友圈",
-      aspectRatio: "4 / 5",
-      personalityTitle: report.personality.title,
+      aspectRatio: "3 / 4",
+      personalityTitle,
+      personaImage,
       roastLine: report.roast.short,
       highlight,
       periodLabel: options.periodLabel,

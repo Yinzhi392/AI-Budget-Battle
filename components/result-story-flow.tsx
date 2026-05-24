@@ -198,9 +198,20 @@ export function StoryScreenCard({
       {screen.kind === "behavior" ? <BehaviorPulse /> : null}
 
       {screen.bullets?.length ? (
-        <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+        <ul
+          className={cn(
+            "mt-8 grid gap-3",
+            screen.bullets.length === 1 ? "sm:grid-cols-1" : "sm:grid-cols-2",
+          )}
+        >
           {screen.bullets.map((item) => (
-            <li key={item} className="border border-white/10 bg-white/[0.035] p-3 text-sm leading-6 text-zinc-200">
+            <li
+              key={item}
+              className={cn(
+                "border bg-white/[0.055] p-5 text-lg font-black leading-8 text-zinc-50 shadow-[0_18px_55px_rgba(0,0,0,0.24)] sm:text-xl sm:leading-9",
+                accent.border,
+              )}
+            >
               {item}
             </li>
           ))}

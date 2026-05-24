@@ -75,9 +75,13 @@ describe("Task 11 share card templates", () => {
       "xiaohongshu_vertical",
       "wechat_moments",
     ]);
+    expect(cards.find((card) => card.templateType === "wechat_moments")?.aspectRatio).toBe("3 / 4");
+    expect(cards.find((card) => card.templateType === "xiaohongshu_vertical")?.aspectRatio).toBe("3 / 4");
     expect(cards).toHaveLength(3);
     expect(JSON.stringify(cards)).not.toContain("一点点");
     expect(cards.every((card) => card.watermark.includes("AI Budget Battle"))).toBe(true);
+    expect(cards.every((card) => card.personalityTitle === "奶茶黑洞人格🧋")).toBe(true);
+    expect(cards.every((card) => card.personaImage?.src.includes("/personas/milk-tea-black-hole.png"))).toBe(true);
   });
 
   it("mock persistence finds snapshots by report id and enforces one anonymous export", async () => {

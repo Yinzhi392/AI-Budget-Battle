@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { DashboardPanel } from "@/app/dashboard/dashboard-panel";
 import { BattleShell } from "@/components/battle-shell";
 import { buildDashboardSummary } from "@/lib/dashboard-summary";
@@ -69,11 +70,20 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           </Link>
         </section>
       ) : (
-        <DashboardPanel
-          summary={buildDashboardSummary(selected, {
-            now: new Date().toISOString(),
-          })}
-        />
+        <div className="grid gap-5">
+          <Link
+            href={`/battle/result/${selected.analysisSession.id}`}
+            className="inline-flex min-h-12 w-full items-center justify-center gap-2 border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-bold text-white transition hover:border-emerald-300/45 hover:bg-emerald-300/10 sm:w-fit"
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            返回战报
+          </Link>
+          <DashboardPanel
+            summary={buildDashboardSummary(selected, {
+              now: new Date().toISOString(),
+            })}
+          />
+        </div>
       )}
     </BattleShell>
   );

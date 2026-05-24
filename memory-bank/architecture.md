@@ -64,6 +64,7 @@ Implemented so far:
 - Screenshot retention model with 24-hour maximum retention and no raw screenshot history retention.
 - Generating-page Cyber Scan/progress animation.
 - Result-story visual polish with animated personality character, behavior pulse cards, sharper safe roast copy, and a five-dimensional radar chart.
+- Post-Task-15 UI polish for mobile layout stability, larger result insight cards, persona image assets, emoji-enhanced persona titles, share-card persona images, and a dashboard return-to-story link.
 - Unit tests for schema validation, invalid payload rejection, mock provider outputs, and mock persistence flow.
 - Unit and Playwright tests for Task 5 setup validation, refresh persistence, and invalid-step redirects.
 - Unit and Playwright tests for Task 6 upload validation and fallback upload/manual flows.
@@ -148,7 +149,7 @@ Not implemented yet:
 - `app/auth/actions.ts`: Server Action for auth provider sign-in, auth cookie writes, anonymous-to-user linking, and `returnTo` continuation.
 - `app/history/page.tsx`: implemented Task 13 history route. It requires mock login, lists the current user's saved reports, and provides reopen, dashboard, share, and delete actions without showing raw screenshots.
 - `app/history/actions.ts`: Server Action for owner-scoped saved-report deletion.
-- `app/dashboard/page.tsx`: implemented Task 13 lightweight dashboard route. It requires mock login, loads a saved report by `sessionId`, and renders category breakdown, score explanations, confirmed input summary, risk notes, and screenshot retention status.
+- `app/dashboard/page.tsx`: implemented Task 13 lightweight dashboard route. It requires mock login, loads a saved report by `sessionId`, renders category breakdown, score explanations, confirmed input summary, risk notes, and screenshot retention status, and provides a `返回战报` link back to the matching story report.
 - `app/dashboard/dashboard-panel.tsx`: client-side dashboard presentation component with a simple Recharts bar chart and non-dense Cyber support panels.
 - `app/globals.css`: Tailwind CSS entrypoint, Cyber color tokens, Chinese-friendly font stack, scanline effect, and grid background treatment.
 - `app/favicon.ico`: default scaffold favicon.
@@ -157,12 +158,12 @@ Not implemented yet:
 ### UI Utilities
 
 - `components.json`: shadcn/ui configuration. It sets TypeScript, React Server Components, neutral base color, Tailwind CSS entrypoint, aliases, and Lucide icon library.
-- `components/battle-shell.tsx`: shared route skeleton shell. It owns product identity, battle flow navigation, optional placeholder status badge, optional primary/secondary CTAs, optional highlight chips, optional right-side route panels, and route-specific children for setup/upload forms.
-- `components/result-story-flow.tsx`: client-side Task 10/11/13 story experience. It renders story progress, jump controls, forward/backward navigation, high-contrast story cards, the animated milk-tea personality character, behavior pulse cards, animated score bars, the five-dimensional radar chart with visible vertex labels, the final dashboard CTA, and the final share-card CTA without exposing raw merchant details.
-- `components/share-card-studio.tsx`: client-side Task 11/12 share-card editor. It renders template selection, responsive card previews, watermark/invite footer, local export status, `html-to-image` export, current login email, login continuation link, and save/remove-watermark actions.
+- `components/battle-shell.tsx`: shared route skeleton shell. It owns product identity, battle flow navigation, optional placeholder status badge, optional primary/secondary CTAs, optional highlight chips, optional right-side route panels, and route-specific children for setup/upload forms. Post-Task-15 mobile polish keeps the shell constrained on small screens and keeps the flow nav horizontally scrollable.
+- `components/result-story-flow.tsx`: client-side Task 10/11/13 story experience. It renders story progress, jump controls, forward/backward navigation, high-contrast story cards, persona image assets, emoji-enhanced personality titles, behavior pulse cards, animated score bars, the five-dimensional radar chart with visible vertex labels, larger analysis insight cards, the final dashboard CTA, and the final share-card CTA without exposing raw merchant details.
+- `components/share-card-studio.tsx`: client-side Task 11/12 share-card editor. It renders template selection, responsive card previews, persona-first character imagery on a pure black card background, cyan/green edge glow, height-based character scaling, soft radial image isolation, masked image-edge blending, a 40%-50% character emphasis zone balanced against bottom content, a single highlight block, fixed two-column period/challenge tags, local export status, `html-to-image` export, current login email, login continuation link, and save/remove-watermark actions. The visible DOM preview remains the source for exported images, but it no longer renders a separate watermark row because the export/auth model already tracks watermark state and the extra visible text conflicted with the period/date tag row.
 - `lib/route-content.ts`: centralized copy and route metadata for all Task 3 placeholder pages. It also defines the battle flow navigation links.
 - `lib/report-story.ts`: pure Task 10/11 story builder that converts an `AiReport` into the eight Cyber Wrapped story screens used by the result UI, including score radar point data. The benchmark and risk screens keep general context in the body and concrete observations/warnings in bullets so the same insight is not repeated twice.
-- `lib/share-card.ts`: pure Task 11 share-card builder that converts a saved safe report into privacy-safe share-card view models and formatted period labels.
+- `lib/share-card.ts`: pure Task 11 share-card builder that converts a saved safe report into privacy-safe share-card view models, persona display titles/images, formatted period labels, highlight copy, challenge tags, and watermark copy for card composition.
 - `lib/dashboard-summary.ts`: pure Task 13 dashboard summary builder. It aggregates confirmed exact and estimated input by category, builds score explanations and risk notes, and intentionally excludes raw merchant detail from dashboard summary output.
 - `lib/utils.ts`: shared `cn` utility built from `clsx` and `tailwind-merge`; intended for future shadcn/ui components.
 

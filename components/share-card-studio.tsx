@@ -1,7 +1,8 @@
 "use client";
 
 import { toPng } from "html-to-image";
-import { Download, Lock, QrCode } from "lucide-react";
+import { Download, Lock } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { forwardRef, useRef, useState, useTransition } from "react";
 import {
@@ -193,47 +194,97 @@ const ShareCardPreview = forwardRef<HTMLDivElement, { card: ShareCardViewModel }
   { card },
   ref,
 ) {
+  const isSquare = card.templateType === "xiaohongshu_square";
+  const textClampTwo =
+    "overflow-hidden [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]";
+
   return (
   <div
     ref={ref}
-    className="relative grid w-full max-w-[420px] overflow-hidden border border-emerald-300/40 bg-zinc-950 p-5 text-white shadow-[0_0_70px_rgba(52,211,153,0.16)]"
-    style={{ aspectRatio: card.aspectRatio }}
+    className={cn(
+      "relative grid w-full max-w-[420px] overflow-hidden border border-cyan-300/55 bg-black text-white",
+      isSquare ? "p-4" : "p-5",
+    )}
+    style={{
+      aspectRatio: card.aspectRatio,
+      boxShadow:
+        "0 0 22px rgba(34,211,238,0.45), 0 0 54px rgba(52,211,153,0.22), 0 0 96px rgba(14,165,233,0.16), inset 0 0 28px rgba(34,211,238,0.08)",
+    }}
   >
-    <div className="absolute inset-0 bg-[linear-gradient(rgba(52,211,153,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(56,189,248,0.11)_1px,transparent_1px)] bg-[size:32px_32px]" />
-    <div className="relative z-10 grid content-between gap-4">
-      <div>
-        <p className="text-xs font-black uppercase tracking-[0.24em] text-emerald-300">
-          Cyber Wrapped
-        </p>
-        <h2 className="mt-4 text-4xl font-black leading-tight">{card.personalityTitle}</h2>
-        <p className="mt-3 border-l-2 border-orange-300 pl-3 text-sm leading-6 text-orange-100">
+    <div className="absolute inset-0 bg-black" />
+    <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-cyan-300/14 to-transparent" />
+    <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-emerald-300/12 to-transparent" />
+    <div className="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-cyan-300/10 to-transparent" />
+    <div className="absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-sky-300/10 to-transparent" />
+    <div className="absolute inset-x-0 top-0 h-1 bg-emerald-300" />
+    <div className="absolute inset-x-5 top-[58%] h-px bg-gradient-to-r from-transparent via-cyan-200/14 to-transparent" />
+    <div className="absolute -right-16 -top-16 size-40 rounded-full border border-cyan-200/10" />
+    <div className="absolute -bottom-20 -left-16 size-48 rounded-full border border-emerald-200/10" />
+    <div
+      className={cn(
+        "relative z-10 grid h-full min-h-0",
+        isSquare ? "grid-rows-[auto_40%_minmax(0,auto)] gap-2" : "grid-rows-[auto_44%_minmax(0,auto)] gap-4",
+      )}
+    >
+      <div className={cn("grid", isSquare ? "gap-2" : "gap-3")}>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs font-black uppercase tracking-[0.28em] text-emerald-300">
+            Cyber Wrapped
+          </p>
+          <span className="border border-white/10 bg-white/[0.045] px-2 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-zinc-300">
+            Battle Report
+          </span>
+        </div>
+        <h2 className={cn("font-black leading-tight tracking-normal", isSquare ? "text-3xl" : "text-3xl sm:text-4xl")}>
+          {card.personalityTitle}
+        </h2>
+        <p className={cn("border-l-2 border-orange-300 pl-3 text-sm font-bold leading-6 text-orange-100", isSquare ? textClampTwo : "")}>
           {card.roastLine}
         </p>
       </div>
 
-      <div className="grid gap-3">
-        <div className="border border-sky-300/35 bg-sky-300/10 p-3">
-          <p className="text-xs font-bold text-sky-200">本期高光</p>
-          <p className="mt-2 text-lg font-black leading-snug">{card.highlight}</p>
-        </div>
-        <div className="flex items-center justify-between gap-3">
-          <span className="border border-emerald-300/40 bg-emerald-300/10 px-3 py-2 text-xs font-black text-emerald-100">
-            {card.periodLabel}
-          </span>
-          <span className="border border-orange-300/40 bg-orange-300/10 px-3 py-2 text-xs font-black text-orange-100">
-            {card.challengeTag}
-          </span>
-        </div>
+      <div className="grid min-h-0 place-items-center">
+        {card.personaImage ? (
+          <div className="relative isolate grid h-full min-h-0 w-full place-items-center overflow-hidden bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.09),rgba(34,211,238,0.08)_42%,transparent_74%)] p-1">
+            <div className="absolute inset-x-10 top-1/2 h-px bg-gradient-to-r from-transparent via-white/14 to-transparent" />
+            <div className="absolute aspect-square h-[94%] bg-[radial-gradient(circle,rgba(255,255,255,0.12),rgba(34,211,238,0.08)_40%,transparent_70%)] blur-2xl" />
+            <div className="relative isolate aspect-square h-full max-h-full overflow-visible">
+              <Image
+                src={card.personaImage.src}
+                alt={card.personaImage.alt}
+                fill
+                unoptimized
+                sizes={isSquare ? "260px" : "320px"}
+                className="object-contain drop-shadow-[0_22px_34px_rgba(0,0,0,0.42)]"
+                style={{
+                  mixBlendMode: "lighten",
+                  WebkitMaskImage:
+                    "radial-gradient(circle at center, #000 56%, rgba(0,0,0,0.82) 70%, transparent 88%)",
+                  maskImage:
+                    "radial-gradient(circle at center, #000 56%, rgba(0,0,0,0.82) 70%, transparent 88%)",
+                }}
+              />
+            </div>
+          </div>
+        ) : null}
       </div>
 
-      <div className="grid grid-cols-[1fr_auto] items-end gap-4">
-        <div>
-          <p className="text-sm leading-6 text-zinc-200">{card.shareCopy}</p>
-          <p className="mt-3 text-xs font-bold text-zinc-500">{card.watermark}</p>
+      <div className={cn("grid min-h-0", isSquare ? "gap-2" : "gap-3")}>
+        <div className="border border-sky-300/30 bg-sky-300/10 p-3">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-sky-200">
+            本期高光
+          </p>
+          <p className={cn("mt-2 font-black leading-snug", isSquare ? `text-sm ${textClampTwo}` : "text-lg sm:text-xl")}>
+            {card.highlight}
+          </p>
         </div>
-        <div className="grid size-16 place-items-center border border-white/15 bg-white/[0.04] text-zinc-300">
-          <QrCode className="size-9" aria-hidden="true" />
-          <span className="sr-only">{card.inviteText}</span>
+        <div className="grid min-h-9 grid-cols-2 items-stretch gap-3">
+          <span className="flex min-w-0 items-center justify-center border border-emerald-300/40 bg-emerald-300/10 px-2 py-2 text-center text-xs font-black leading-none text-emerald-100">
+            {card.periodLabel}
+          </span>
+          <span className="flex min-w-0 items-center justify-center border border-orange-300/40 bg-orange-300/10 px-2 py-2 text-center text-xs font-black leading-none text-orange-100">
+            {card.challengeTag}
+          </span>
         </div>
       </div>
     </div>

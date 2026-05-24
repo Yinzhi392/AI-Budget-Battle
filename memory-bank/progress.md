@@ -1008,6 +1008,80 @@ Manual real-provider note:
 
 - No live OpenAI extraction/report flow was run in this local session because no valid `OPENAI_API_KEY` and reachable provider configuration were available. The provider boundary is enabled and covered with injected fake clients plus recoverable unavailable/timeout tests.
 
+### 2026-05-23 - Post-Task-15 UI Polish Notes
+
+Status: in progress; do not start Task 16 until the user verifies the current UI behavior.
+
+Project memory-bank rule update:
+
+- `AGENTS.md` now explicitly requires every future project change to update memory-bank automatically without waiting for another user reminder.
+- All future code, UI, style, copy, test, config, dependency, route, data model, provider, deployment, or documentation changes must at least update `memory-bank/progress.md`.
+- Architecture/file-responsibility/data-flow/provider/UI-structure changes must also update `memory-bank/architecture.md`.
+- Product principle or task-scope changes must also update `memory-bank/design-document.md` or `memory-bank/implementation-plan.md` as appropriate.
+
+What has been updated after Task 15:
+
+- Mobile layout compatibility was improved through global and shell-level responsive fixes.
+  - Page-level horizontal overflow is constrained.
+  - Battle flow navigation remains horizontally scrollable on small screens.
+  - Large headings, CTA rows, media blocks, and form controls use safer mobile widths.
+- Result-story presentation was refined based on browser review feedback.
+  - Analysis output cards on benchmark and risk screens use larger, more prominent text.
+  - Personality titles support emoji display.
+  - Persona-specific image assets from `public/personas/` are used in the result reveal and share-card preview paths.
+  - Radar chart vertices show readable labels.
+  - Repeated benchmark/risk copy was removed so upper explanatory text and lower insight cards do not duplicate the same sentence.
+- Share-card presentation was refined after user review.
+  - Share cards include the matching persona character image.
+  - Persona image backgrounds are blended into the card stage with a softer Cyber glow so black image backplates do not appear as abrupt separate blocks.
+  - Persona image stage now scales the character by available height instead of minimum width, enlarging the central character while keeping the full figure visible.
+  - Added a white/transparent isolation layer behind the persona image to reduce conflict between black-backed character assets and the Cyber green card background.
+  - Share-card character stage now reserves roughly 44% of square cards and 48% of vertical cards for the persona image, matching the target 40%-50% visual emphasis.
+  - Restored blend-based image treatment inside the isolation layer so black-backed persona assets merge into the card instead of reading as a separate rectangle.
+  - Removed the hard rectangular image backplate from the persona stage and replaced it with a softer radial glow.
+  - Added a radial mask to the persona image so black-backed image edges fade into the card background more naturally.
+  - Share-card background is now pure black, with cyan/green edge glows around all sides and subtle inner edge light instead of a blue-green card wash.
+  - Persona stage was adjusted to sit on the black card background with only low-opacity radial glow, reducing conflict between the character asset and the card.
+  - Share-card bottom metadata row now uses fixed two-column tag cells with enough height so period and challenge tags are fully visible.
+  - Character emphasis was slightly reduced from the previous allocation to keep the bottom highlight and tag content inside the card bounds.
+  - Share cards now use a persona-first layout: the character image is the main visual block, with only the title/roast, highlight, period, and challenge tag kept around it.
+  - Removed the over-dense battle score, risk, and challenge panels from the share-card preview after user feedback that the previous layout was chaotic.
+  - Xiaohongshu square, Xiaohongshu vertical, and WeChat Moments cards share the simplified visual hierarchy so the exported card reads as a clean social card rather than a mini dashboard.
+  - The QR-style decorative block was removed from share cards.
+  - WeChat Moments uses the same vertical-card aspect ratio as the Xiaohongshu vertical template.
+  - Removed the visible watermark text from the card preview so it no longer overlaps or visually duplicates the period/date and challenge tag row; watermark state remains in the export/auth data model.
+  - Share-card export continues to render from the same DOM preview, so visible persona images are included in exported cards.
+- Dashboard navigation was improved.
+  - `/dashboard?sessionId=...` now shows a mobile-friendly `返回战报` link back to the matching `/battle/result/[sessionId]` story page.
+
+Verification already run for completed UI polish:
+
+- `pnpm lint`: passed after the dashboard return-link update.
+- `pnpm typecheck`: passed after the dashboard return-link update.
+- Prior targeted share-card/result-story UI checks passed with `pnpm lint`, `pnpm typecheck`, and relevant Task 10/11 unit tests during the earlier polish passes.
+- `pnpm lint`: passed after the share-card persona-first layout update.
+- `pnpm typecheck`: passed after the share-card persona-first layout update.
+- `pnpm exec vitest run tests/task11-share-card.test.tsx`: passed after the share-card persona-first layout update.
+- `pnpm lint`: passed after the share-card character scale/isolation update.
+- `pnpm typecheck`: passed after the share-card character scale/isolation update.
+- `pnpm exec vitest run tests/task11-share-card.test.tsx`: passed after the share-card character scale/isolation update.
+- `pnpm lint`: passed after the 40%-50% share-card character emphasis update.
+- `pnpm typecheck`: passed after the 40%-50% share-card character emphasis update.
+- `pnpm exec vitest run tests/task11-share-card.test.tsx`: passed after the 40%-50% share-card character emphasis update.
+- `pnpm lint`: passed after the share-card persona/background blend refinement.
+- `pnpm typecheck`: passed after the share-card persona/background blend refinement.
+- `pnpm exec vitest run tests/task11-share-card.test.tsx`: passed after the share-card persona/background blend refinement.
+- `pnpm lint`: passed after the share-card black-background/edge-glow update.
+- `pnpm typecheck`: passed after the share-card black-background/edge-glow update.
+- `pnpm exec vitest run tests/task11-share-card.test.tsx`: passed after the share-card black-background/edge-glow update.
+- `pnpm lint`: passed after the share-card bottom tag visibility fix.
+- `pnpm typecheck`: passed after the share-card bottom tag visibility fix.
+- `pnpm exec vitest run tests/task11-share-card.test.tsx`: passed after the share-card bottom tag visibility fix.
+- `pnpm lint`: passed after the share-card visible-watermark removal.
+- `pnpm typecheck`: passed after the share-card visible-watermark removal.
+- `pnpm exec vitest run tests/task11-share-card.test.tsx`: passed after the share-card visible-watermark removal.
+- Attempted a local Playwright screenshot check through `node_repl`, but that runtime could not import `playwright`; no dependency was installed or changed for this check.
+
 ## Next Step
 
 Stop here until the user verifies Task 15 tests and behavior. After user verification, proceed to Task 16 from `memory-bank/implementation-plan.md`.

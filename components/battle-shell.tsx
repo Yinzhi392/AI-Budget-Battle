@@ -29,26 +29,29 @@ export function BattleShell({
   showSidebar = true,
 }: BattleShellProps) {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
+    <main className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       <div className="cyber-grid pointer-events-none absolute inset-0" />
       <div className="scanline pointer-events-none absolute inset-0" />
-      <section className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 py-6 sm:px-8 lg:px-10">
+      <section className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-5 sm:px-8 sm:py-6 lg:px-10">
         <header className="flex flex-col gap-5 border-b border-white/10 pb-5 lg:flex-row lg:items-center lg:justify-between">
-          <Link href="/" className="group inline-flex items-center gap-3">
-            <span className="grid size-10 place-items-center border border-emerald-300/40 bg-emerald-300/10 text-emerald-200 shadow-[0_0_26px_rgba(52,211,153,0.2)]">
+          <Link href="/" className="group inline-flex min-w-0 items-center gap-3">
+            <span className="grid size-10 shrink-0 place-items-center border border-emerald-300/40 bg-emerald-300/10 text-emerald-200 shadow-[0_0_26px_rgba(52,211,153,0.2)]">
               <Sparkles className="size-5" aria-hidden="true" />
             </span>
-            <span>
-              <span className="block text-sm font-semibold uppercase text-white">
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-semibold uppercase text-white">
                 AI Budget Battle
               </span>
-              <span className="block text-xs text-zinc-400">
+              <span className="block truncate text-xs text-zinc-400">
                 Cyber spending report
               </span>
             </span>
           </Link>
 
-          <nav aria-label="Battle flow" className="flex gap-2 overflow-x-auto pb-1">
+          <nav
+            aria-label="Battle flow"
+            className="flex max-w-full gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch]"
+          >
             {battleFlow.map((item) => (
               <Link
                 key={item.href}
@@ -63,13 +66,13 @@ export function BattleShell({
 
         <div
           className={cn(
-            "grid flex-1 items-center gap-8 py-10 lg:py-14",
+            "grid min-w-0 flex-1 items-center gap-8 py-8 sm:py-10 lg:py-14",
             showSidebar
               ? "lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.75fr)]"
               : "lg:grid-cols-1",
           )}
         >
-          <section className="max-w-4xl">
+          <section className="min-w-0 max-w-4xl">
             {showStatusBadge ? (
               <div className="mb-6 inline-flex items-center gap-2 border border-orange-300/30 bg-orange-300/10 px-3 py-2 text-xs font-semibold uppercase text-orange-100">
                 <CircleDot className="size-4" aria-hidden="true" />
@@ -80,7 +83,7 @@ export function BattleShell({
             <p className="mb-4 text-sm font-semibold uppercase text-emerald-300">
               {content.eyebrow}
             </p>
-            <h1 className="max-w-4xl text-5xl font-black leading-[0.95] text-white sm:text-7xl lg:text-8xl">
+            <h1 className="max-w-4xl break-words text-4xl font-black leading-[1.02] text-white sm:text-6xl sm:leading-[0.98] lg:text-8xl">
               {content.title}
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-zinc-300 sm:text-lg">
@@ -109,7 +112,7 @@ export function BattleShell({
               </div>
             ) : null}
 
-            {children ? <div className="mt-8">{children}</div> : null}
+            {children ? <div className="mt-8 min-w-0">{children}</div> : null}
 
             {showHighlights ? (
               <ul
