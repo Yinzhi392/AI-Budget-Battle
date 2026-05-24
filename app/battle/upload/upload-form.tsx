@@ -91,37 +91,37 @@ export function UploadForm({ currency, periodLabel, categories }: UploadFormProp
           setSubmitError("请至少上传一张截图、添加一笔交易或添加一个分类总额");
         }
       }}
-      className="grid max-w-4xl gap-5"
+      className="grid w-full min-w-0 max-w-4xl gap-5 overflow-hidden"
     >
       <input type="hidden" name="manualTransactions" value={JSON.stringify(manualTransactions)} />
       <input type="hidden" name="categoryTotals" value={JSON.stringify(categoryTotals)} />
 
-      <section className="border border-emerald-300/25 bg-emerald-300/10 p-4 text-sm text-emerald-50">
+      <section className="min-w-0 overflow-hidden border border-emerald-300/25 bg-emerald-300/10 p-4 text-sm text-emerald-50">
         <p className="text-base font-black text-white">快速上传</p>
-        <p className="mt-2 leading-7 text-emerald-50/85">
+        <p className="mt-2 break-words leading-7 text-emerald-50/85">
           结果会按估算型娱乐分析生成。可以只传一张月度分析图、几张代表性日账单或分类汇总图，不需要每天都截图。
         </p>
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <div className="mt-4 grid min-w-0 gap-3 sm:grid-cols-3">
           {sourceTypes.map((source, index) => (
             <label
               key={source.value}
-              className="grid cursor-pointer gap-2 border border-white/10 bg-zinc-950/50 p-3 text-zinc-200 transition has-[:checked]:border-emerald-300/70 has-[:checked]:bg-emerald-300/15 has-[:checked]:text-emerald-100"
+              className="grid min-w-0 cursor-pointer gap-2 border border-white/10 bg-zinc-950/50 p-3 text-zinc-200 transition has-[:checked]:border-emerald-300/70 has-[:checked]:bg-emerald-300/15 has-[:checked]:text-emerald-100"
             >
-              <span className="flex items-center gap-2 font-bold">
+              <span className="flex min-w-0 items-start gap-2 font-bold">
                 <input
                   type="radio"
                   name="sourceType"
                   value={source.value}
                   defaultChecked={index === 0}
-                  className="size-4 accent-emerald-300"
+                  className="mt-1 size-4 shrink-0 accent-emerald-300"
                 />
-                {source.label}
+                <span className="min-w-0 break-words">{source.label}</span>
               </span>
-              <span className="text-xs leading-5 text-zinc-400">{source.description}</span>
+              <span className="min-w-0 break-words text-xs leading-5 text-zinc-400">{source.description}</span>
             </label>
           ))}
         </div>
-        <label className="mt-4 grid gap-2 text-sm font-bold text-white">
+        <label className="mt-4 grid min-w-0 gap-2 text-sm font-bold text-white">
           账单截图
           <input
             type="file"
@@ -129,37 +129,45 @@ export function UploadForm({ currency, periodLabel, categories }: UploadFormProp
             accept="image/*"
             multiple
             onChange={(event) => setScreenshotCount(event.currentTarget.files?.length ?? 0)}
-            className="min-h-12 border border-white/10 bg-zinc-950 px-3 py-2 text-zinc-200 file:mr-3 file:border-0 file:bg-emerald-300 file:px-3 file:py-2 file:font-bold file:text-zinc-950"
+            className="sr-only"
           />
+          <span className="flex min-h-12 w-full min-w-0 items-center gap-3 overflow-hidden border border-white/10 bg-zinc-950 px-3 py-2 text-zinc-200">
+            <span className="shrink-0 bg-emerald-300 px-3 py-2 text-zinc-950">
+              选择文件
+            </span>
+            <span className="min-w-0 flex-1 truncate text-zinc-200/90">
+              {screenshotCount > 0 ? `${screenshotCount} 张截图已选` : "未选择文件"}
+            </span>
+          </span>
         </label>
-        <p className="mt-3 text-sm text-emerald-100">
+        <p className="mt-3 break-words text-sm leading-7 text-emerald-100">
           {screenshotCount > 0
             ? `已选择 ${screenshotCount} 张截图，稍后会进入临时识别队列。`
             : "截图只做临时处理；AI 识别失败也可以继续用手动输入或分类总额。"}
         </p>
       </section>
 
-      <section className="grid gap-4 border border-white/10 bg-zinc-950/60 p-4">
+      <section className="grid min-w-0 gap-4 overflow-hidden border border-white/10 bg-zinc-950/60 p-4">
         <div>
           <p className="text-base font-black text-white">手动添加交易</p>
-          <p className="mt-2 text-sm leading-7 text-zinc-300">
+          <p className="mt-2 break-words text-sm leading-7 text-zinc-300">
             不想传完整账单时，添加几笔代表性消费也可以继续生成估算战报。
           </p>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <label className="grid gap-2 text-sm font-bold text-zinc-200">
+        <div className="grid min-w-0 gap-3 sm:grid-cols-2">
+          <label className="grid min-w-0 gap-2 text-sm font-bold text-zinc-200">
             金额
             <input
               name="amount"
               inputMode="decimal"
-              className="min-h-12 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
+              className="min-h-12 w-full min-w-0 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
             />
           </label>
-          <label className="grid gap-2 text-sm font-bold text-zinc-200">
+          <label className="grid min-w-0 gap-2 text-sm font-bold text-zinc-200">
             分类
             <select
               name="category"
-              className="min-h-12 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
+              className="min-h-12 w-full min-w-0 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
             >
               {categories.map((category) => (
                 <option key={category.value} value={category.value}>
@@ -168,20 +176,20 @@ export function UploadForm({ currency, periodLabel, categories }: UploadFormProp
               ))}
             </select>
           </label>
-          <label className="grid gap-2 text-sm font-bold text-zinc-200">
+          <label className="grid min-w-0 gap-2 text-sm font-bold text-zinc-200">
             消费时间
             <input
               name="transactionTime"
               type="datetime-local"
               defaultValue={todayValue}
-              className="min-h-12 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
+              className="min-h-12 w-full min-w-0 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
             />
           </label>
-          <label className="grid gap-2 text-sm font-bold text-zinc-200">
+          <label className="grid min-w-0 gap-2 text-sm font-bold text-zinc-200">
             商户或备注
             <input
               name="merchant"
-              className="min-h-12 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
+              className="min-h-12 w-full min-w-0 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
             />
           </label>
         </div>
@@ -194,9 +202,9 @@ export function UploadForm({ currency, periodLabel, categories }: UploadFormProp
         </button>
         {manualError ? <p className="text-sm font-bold text-orange-200">{manualError}</p> : null}
         {manualTransactions.length > 0 ? (
-          <ul className="grid gap-2 text-sm text-zinc-200">
+          <ul className="grid min-w-0 gap-2 text-sm text-zinc-200">
             {manualTransactions.map((transaction, index) => (
-              <li key={`${transaction.transactionTime}-${index}`} className="border border-white/10 p-3">
+              <li key={`${transaction.transactionTime}-${index}`} className="min-w-0 break-words border border-white/10 p-3">
                 {transaction.merchant ?? getCategoryLabel(transaction.category)} / {transaction.amount}{" "}
                 {transaction.currency}
               </li>
@@ -205,19 +213,19 @@ export function UploadForm({ currency, periodLabel, categories }: UploadFormProp
         ) : null}
       </section>
 
-      <section className="grid gap-4 border border-white/10 bg-zinc-950/60 p-4">
+      <section className="grid min-w-0 gap-4 overflow-hidden border border-white/10 bg-zinc-950/60 p-4">
         <div>
           <p className="text-base font-black text-white">分类总额或线索</p>
-          <p className="mt-2 text-sm leading-7 text-zinc-300">
+          <p className="mt-2 break-words text-sm leading-7 text-zinc-300">
             只记得某类大概花了多少也可以添加，这会被标记为估算，不会伪装成逐笔交易。
           </p>
         </div>
-        <div className="grid gap-3 sm:grid-cols-3">
-          <label className="grid gap-2 text-sm font-bold text-zinc-200">
+        <div className="grid min-w-0 gap-3 sm:grid-cols-3">
+          <label className="grid min-w-0 gap-2 text-sm font-bold text-zinc-200">
             分类总额
             <select
               name="categoryTotal"
-              className="min-h-12 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
+              className="min-h-12 w-full min-w-0 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
             >
               {categories.map((category) => (
                 <option key={category.value} value={category.value}>
@@ -226,19 +234,19 @@ export function UploadForm({ currency, periodLabel, categories }: UploadFormProp
               ))}
             </select>
           </label>
-          <label className="grid gap-2 text-sm font-bold text-zinc-200">
+          <label className="grid min-w-0 gap-2 text-sm font-bold text-zinc-200">
             分类金额
             <input
               name="categoryAmount"
               inputMode="decimal"
-              className="min-h-12 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
+              className="min-h-12 w-full min-w-0 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
             />
           </label>
-          <label className="grid gap-2 text-sm font-bold text-zinc-200">
+          <label className="grid min-w-0 gap-2 text-sm font-bold text-zinc-200">
             说明
             <input
               name="categoryNote"
-              className="min-h-12 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
+              className="min-h-12 w-full min-w-0 border border-white/10 bg-zinc-950 px-3 text-zinc-100"
             />
           </label>
         </div>
@@ -253,9 +261,9 @@ export function UploadForm({ currency, periodLabel, categories }: UploadFormProp
           <p className="text-sm font-bold text-orange-200">{categoryTotalError}</p>
         ) : null}
         {categoryTotals.length > 0 ? (
-          <ul className="grid gap-2 text-sm text-zinc-200">
+          <ul className="grid min-w-0 gap-2 text-sm text-zinc-200">
             {categoryTotals.map((total, index) => (
-              <li key={`${total.category}-${index}`} className="border border-white/10 p-3">
+              <li key={`${total.category}-${index}`} className="min-w-0 break-words border border-white/10 p-3">
                 {getCategoryLabel(total.category)} / {total.amount} {total.currency}
                 {total.note ? <span className="ml-2 text-zinc-400">{total.note}</span> : null}
               </li>

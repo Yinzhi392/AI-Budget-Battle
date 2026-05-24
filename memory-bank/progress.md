@@ -3,9 +3,11 @@
 ## Current Status
 
 - Current branch: `codex/task-2-scaffold`.
-- Current milestone: Task 15 completed; waiting for user test verification before Task 16.
+- Current milestone: Task 15 completed; first Vercel production deployment completed; latest Vercel production includes the mobile upload Step 3 overflow fix; waiting for user test verification before Task 16.
 - The project now has typed domain models, Zod schemas, mock persistence, mock auth, mock AI extraction/report providers, anonymous setup cookies, auth cookies, region/currency selection, period selection, upload access guarding, low-friction screenshot upload UI, manual transaction input, category-total fallback input, a server-only mock/OpenAI extraction provider boundary with retry and timeout handling, a confirmation table for exact and estimated rows, a safe mock/OpenAI report generation boundary with retry and timeout handling, a Cyber Wrapped result story flow, animated generating/result visuals, share-card templates/export behavior, login gates for save/remove-watermark/additional export/repeated report generation, saved-report history, lightweight dashboard, mock report deletion, screenshot-retention status, and a Supabase schema/provider boundary behind server-only configuration.
 - Supabase migration and seed files now exist, but no remote Supabase project migration was executed in this local Codex session. Real OpenAI flow was not manually exercised because no valid local API key/reachable provider was configured. Real OCR queue behavior is still not implemented.
+- Production deployment is available at `https://ai-budget-battle.vercel.app` using the default mock-first provider configuration.
+- Latest production deployment includes the mobile upload Step 3 overflow fix.
 
 ## Completed Work
 
@@ -1007,6 +1009,63 @@ Verification run:
 Manual real-provider note:
 
 - No live OpenAI extraction/report flow was run in this local session because no valid `OPENAI_API_KEY` and reachable provider configuration were available. The provider boundary is enabled and covered with injected fake clients plus recoverable unavailable/timeout tests.
+
+### 2026-05-24 - First Vercel Production Deployment
+
+Status: completed.
+
+What changed:
+
+- Linked the local project to Vercel project `yinzhi-s-projects/ai-budget-battle`.
+- Deployed the current Next.js app to Vercel production with the existing `vercel.json` settings:
+  - Install command: `pnpm install`
+  - Build command: `pnpm build`
+- Production deployment URL:
+  - `https://ai-budget-battle-bmde74dkq-yinzhi-s-projects.vercel.app`
+- Stable production alias:
+  - `https://ai-budget-battle.vercel.app`
+- `.vercel/project.json` was created locally by the Vercel CLI, but `.vercel` is already ignored by `.gitignore`, so no Vercel project binding secrets are intended for git.
+- No business code, UI code, provider code, or environment configuration was changed for deployment.
+
+Verification:
+
+- Local `pnpm build`: initially failed in the sandbox because Next.js could not write `.next/trace-build`; elevated rerun passed.
+- Vercel production build: passed on Vercel with Next.js 16.2.6 and pnpm 11.1.3.
+- Vercel deployment state: `READY`.
+- Vercel fetch check for `https://ai-budget-battle.vercel.app/`: returned `200 OK` and served the expected `AI Budget Battle` HTML.
+
+Deployment notes:
+
+- Hosted deployment is currently mock-first by default. Supabase and OpenAI providers remain disabled unless the corresponding Vercel environment variables are configured server-side.
+- Mock persistence is in-memory/serverless-process scoped, so hosted anonymous sessions and saved reports are not durable across Vercel instance resets until Supabase is enabled.
+
+### 2026-05-24 - Mobile Upload Step 3 Overflow Fix
+
+Status: completed and redeployed to Vercel production.
+
+What changed:
+
+- Fixed `/battle/upload` mobile layout overflow reported on the deployed site.
+- Tightened the upload page summary cards with `w-full`, `min-w-0`, `overflow-hidden`, and breakable text so the selected region/currency and period panels do not widen the viewport.
+- Reworked upload form containers and field grids with mobile-safe width constraints.
+- Replaced the visible native file input with an accessible hidden file input plus a custom responsive file picker row:
+  - The accessible label remains `账单截图`, so existing file-upload interactions still work.
+  - The visible row now shows `选择文件` and a truncating selection status instead of letting the browser-native file input stretch the page.
+- Added mobile-safe wrapping/min-width handling to source-type cards, manual transaction fields, category-total fields, and saved-row previews.
+- Added Playwright regression coverage for a 390px mobile viewport to assert that `/battle/upload` does not create horizontal document overflow.
+- Redeployed the fix to Vercel production:
+  - Stable URL: `https://ai-budget-battle.vercel.app`
+  - Deployment URL: `https://ai-budget-battle-8i50eq91o-yinzhi-s-projects.vercel.app`
+
+Verification:
+
+- `pnpm lint`: passed.
+- `pnpm typecheck`: first sandbox run failed because TypeScript could not write `tsconfig.tsbuildinfo`; elevated rerun passed.
+- `pnpm exec playwright test e2e/upload-flow.spec.ts`: first sandbox run failed because Playwright could not write `test-results/.last-run.json`; elevated rerun passed with 6 Chromium tests.
+- New mobile overflow regression test passed at 390px viewport.
+- Local `pnpm build`: passed.
+- Vercel production build: passed.
+- Vercel deployment state: `READY`, with `https://ai-budget-battle.vercel.app` aliased to the latest production deployment.
 
 ### 2026-05-23 - Post-Task-15 UI Polish Notes
 

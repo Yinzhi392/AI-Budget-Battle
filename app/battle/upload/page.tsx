@@ -53,10 +53,10 @@ export default async function UploadPage({ searchParams }: UploadPageProps) {
       showHighlights={false}
       showSidebar={false}
     >
-      <div className="grid max-w-2xl gap-3 border border-white/10 bg-zinc-950/60 p-4 text-sm text-zinc-200 sm:grid-cols-2">
-        <div className="border border-emerald-300/30 bg-emerald-300/10 p-4">
+      <div className="grid w-full min-w-0 max-w-2xl gap-3 overflow-hidden border border-white/10 bg-zinc-950/60 p-4 text-sm text-zinc-200 sm:grid-cols-2">
+        <div className="min-w-0 border border-emerald-300/30 bg-emerald-300/10 p-4">
           <p className="text-xs font-semibold uppercase text-emerald-200">战区和货币</p>
-          <p className="mt-2 text-lg font-black text-white">
+          <p className="mt-2 break-words text-lg font-black text-white">
             {setup.region ? regionLabels[setup.region] : "未选择"} / {setup.currency}
           </p>
           {setup.countryRegion ? (
@@ -65,12 +65,12 @@ export default async function UploadPage({ searchParams }: UploadPageProps) {
             </p>
           ) : null}
         </div>
-        <div className="border border-sky-300/30 bg-sky-300/10 p-4">
+        <div className="min-w-0 border border-sky-300/30 bg-sky-300/10 p-4">
           <p className="text-xs font-semibold uppercase text-sky-200">分析周期</p>
-          <p className="mt-2 text-lg font-black text-white">{periodLabel}</p>
+          <p className="mt-2 break-words text-lg font-black text-white">{periodLabel}</p>
         </div>
       </div>
-      <div className="mt-5">
+      <div className="mt-5 min-w-0">
         {params?.extraction === "failed" ? (
           <div className="mb-5 border border-orange-300/35 bg-orange-300/10 p-4 text-sm font-bold text-orange-100">
             AI 识别暂不可用。你可以添加手动交易或分类总额继续生成估算战报。

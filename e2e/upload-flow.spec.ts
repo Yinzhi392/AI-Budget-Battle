@@ -8,6 +8,20 @@ async function completeSetup(page: Page) {
 }
 
 test.describe("Task 6 upload flow", () => {
+  test("mobile upload step does not create horizontal overflow", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await completeSetup(page);
+
+    await expect(page.getByRole("heading", { name: "上传账单或手动输入" })).toBeVisible();
+    await expect(page.getByText("快速上传")).toBeVisible();
+    await expect(page.getByLabel("账单截图")).toBeAttached();
+
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
+
   test("quick monthly-summary screenshot can proceed without daily screenshots", async ({ page }) => {
     await completeSetup(page);
 
