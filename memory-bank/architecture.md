@@ -2,7 +2,7 @@
 
 ## Current State After Task 15 And First Vercel Deployment
 
-The repository contains the project documentation memory bank plus a baseline Next.js App Router application scaffold, the full Task 3 route skeleton, the Task 4 mock data/provider foundation, the Task 5 anonymous setup flow, the Task 6 low-friction upload/manual input flow, the Task 7 mock/real AI extraction boundary, the Task 8 confirmation table, the Task 9 mock/real AI report generation boundary, the Task 10 Cyber Wrapped result story flow, the Task 11 share-card export flow, the Task 12 mock auth gate, the Task 13 saved-report review layer, the Task 14 Supabase schema/provider boundary, the Task 15 optional OpenAI provider enablement, and the first Vercel production deployment. Users can still run the completed local flow with mock providers by default, while Supabase persistence/auth and OpenAI extraction/report generation can be selected only through server-side environment configuration.
+The repository contains the project documentation memory bank plus a baseline Next.js App Router application scaffold, the full Task 3 route skeleton, the Task 4 mock data/provider foundation, the Task 5 anonymous setup flow, the Task 6 low-friction upload/manual input flow, the Task 7 mock/real AI extraction boundary, the Task 8 confirmation table, the Task 9 mock/real AI report generation boundary, the Task 10 Cyber Wrapped result story flow, the Task 11 share-card export flow, the Task 12 mock auth gate, the Task 13 saved-report review layer, the Task 14 Supabase schema/provider boundary, the Task 15 optional OpenAI provider enablement, the first Vercel production deployment, and public GitHub repository presentation files. Users can still run the completed local flow with mock providers by default, while Supabase persistence/auth and OpenAI extraction/report generation can be selected only through server-side environment configuration. The hosted mock-first upload flow now includes a serverless session-recovery bridge so manual-only submissions can survive Vercel mock-memory resets when setup cookies are still present.
 
 Product direction update: future upload and extraction work must prioritize low-friction participation over complete bill reconstruction. The system should support estimated consumer-personality analysis from a monthly summary screenshot, a few representative daily screenshots, category summaries, and optional manual additions.
 
@@ -65,6 +65,7 @@ Implemented so far:
 - Generating-page Cyber Scan/progress animation.
 - Result-story visual polish with animated personality character, behavior pulse cards, sharper safe roast copy, and a five-dimensional radar chart.
 - Post-Task-15 UI polish for mobile layout stability, upload Step 3 overflow prevention, larger result insight cards, persona image assets, emoji-enhanced persona titles, share-card persona images, and a dashboard return-to-story link.
+- Upload session recovery for Vercel Serverless mock-memory resets, allowing manual-only upload submissions to recreate missing analysis sessions from setup cookies before persistence writes.
 - Unit tests for schema validation, invalid payload rejection, mock provider outputs, and mock persistence flow.
 - Unit and Playwright tests for Task 5 setup validation, refresh persistence, and invalid-step redirects.
 - Unit and Playwright tests for Task 6 upload validation and fallback upload/manual flows.
@@ -80,6 +81,7 @@ Implemented so far:
 - Server-only Supabase config, service client, Auth provider boundary, and PersistenceProvider implementation.
 - Persistence selector that defaults to mock and only selects Supabase when `PERSISTENCE_PROVIDER=supabase` plus complete Supabase server config are present.
 - First production Vercel deployment at `https://ai-budget-battle.vercel.app` using the mock-first default provider configuration.
+- Public GitHub repository presentation at `https://github.com/Yinzhi392/AI-Budget-Battle`, including a project-specific README, MIT License, contribution notes, and package metadata. GitHub Actions workflow creation is intentionally deferred until a token with `workflow` scope is available.
 
 Not implemented yet:
 
@@ -108,10 +110,13 @@ Not implemented yet:
 - `memory-bank/implementation-plan.md`: defines the execution order. It states Task 3 must not begin until Task 2 is verified.
 - `memory-bank/progress.md`: records completed work, commands run, verification results, environment notes, blockers, and current waiting points.
 - `memory-bank/architecture.md`: records architectural decisions, file responsibilities, provider boundaries, and implementation constraints.
+- `README.md`: public-facing project entrypoint for GitHub. It explains the live demo, product positioning, mock-first status, tech stack, project structure, setup commands, optional OpenAI/Supabase providers, and privacy notes.
+- `LICENSE`: MIT License for public/open-source repository use.
+- `CONTRIBUTING.md`: contributor setup and review guidance, including mock-first constraints and memory-bank update rules.
 
 ### App Scaffold
 
-- `package.json`: project manifest. Defines pnpm 11.1.3, scripts (`dev`, `build`, `start`, `lint`, `typecheck`, `test`, `e2e`), runtime dependencies, and dev dependencies.
+- `package.json`: project manifest. Defines public repository metadata, MIT license, homepage/repository/issue links, pnpm 11.1.3, scripts (`dev`, `build`, `start`, `lint`, `typecheck`, `test`, `e2e`), runtime dependencies, and dev dependencies.
 - `pnpm-lock.yaml`: pnpm lockfile for reproducible installs.
 - `pnpm-workspace.yaml`: single-package pnpm workspace configuration. Also allowlists required native build dependencies for the current toolchain.
 - `tsconfig.json`: TypeScript configuration with strict mode and `@/*` path alias.
@@ -135,7 +140,7 @@ Not implemented yet:
 - `app/battle/period/page.tsx`: analysis-period route using `routePages.period` plus a lightweight period form. It requires region/currency setup before rendering.
 - `app/battle/upload/page.tsx`: upload/manual-input route using `routePages.upload`. It guards against missing setup, shows a compact setup summary, renders the Task 6 upload/manual fallback form, displays the recoverable extraction-failure prompt when screenshot-only extraction fails, and constrains summary cards on mobile so selected setup values cannot widen the viewport.
 - `app/battle/upload/upload-form.tsx`: client-side upload/manual input form. It prefers quick monthly summary screenshots, supports representative screenshots, manual transaction rows, category-level estimated totals, client-side validation errors, and estimated-analysis copy. Post-Task-15 mobile polish uses an accessible hidden `账单截图` file input with a custom responsive picker row, plus `min-w-0`, `w-full`, and overflow-safe wrapping across source cards and form fields so browser-native file controls and long Chinese copy cannot create horizontal scroll.
-- `app/battle/upload/actions.ts`: Server Action for saving upload inputs. It stores screenshot metadata, manual transactions, and category total hints in mock persistence, runs the Task 7 extraction boundary, stores valid extraction output, redirects to `/battle/confirm` when there is manual/category/extracted input, and redirects back to upload with a recoverable prompt when screenshot-only extraction fails.
+- `app/battle/upload/actions.ts`: Server Action for saving upload inputs. It runs upload session recovery first, stores screenshot metadata, manual transactions, and category total hints in mock persistence, runs the Task 7 extraction boundary, stores valid extraction output, redirects to `/battle/confirm` when there is manual/category/extracted input, and redirects back to upload with a recoverable prompt when screenshot-only extraction fails.
 - `app/battle/confirm/page.tsx`: interactive confirmation route using `routePages.confirm`. It requires completed setup, loads the current mock analysis snapshot, builds editable rows from manual transactions, extraction transaction candidates, upload-time category total hints, and extraction aggregate candidates, and renders the Task 8 confirmation table without developer-facing skeleton chrome.
 - `app/battle/confirm/confirmation-form.tsx`: client-side confirmation table. It supports editing exact transactions and estimated aggregates, deleting rows, accepting/rejecting rows, adding missing transaction rows, adding estimated aggregate rows, and showing confidence/source/estimated/duplicate/overlap markers before final confirmation.
 - `app/battle/confirm/actions.ts`: Server Action for final confirmation. It validates submitted rows, saves only accepted exact transactions and accepted estimated aggregates, and redirects to `/battle/generating`.
@@ -193,6 +198,7 @@ Not implemented yet:
 - `server/setup/validation.ts`: pure setup validation for supported region/currency choices, period range resolution, custom-period bounds, and anonymous report allowance.
 - `lib/world-options.ts`: global country/region and currency option helpers. Country/region options use a built-in ISO-style region code list rendered through `Intl.DisplayNames`; currency options use `Intl.supportedValuesOf("currency")` when available.
 - `server/setup/session.ts`: cookie names, anonymous session cookie creation, setup cookie reads/writes, and redirect target calculation for guarded setup routes.
+- `server/upload/session-recovery.ts`: recovery bridge for mock-first hosted uploads. It verifies the analysis session referenced by setup cookies still exists in persistence; if Vercel Serverless has lost the in-memory mock session but setup cookies remain, it recreates the anonymous/analysis session state and refreshes `abb_analysis_session` before upload persistence writes. This is a resilience layer for the demo deployment, not a replacement for durable Supabase persistence.
 - `server/upload/validation.ts`: pure Task 6 validation for manual transactions, category-total hints, screenshot metadata, upload source types, and region-aware category options.
 - `server/storage/retention.ts`: pure Task 13 retention model. It marks screenshots as temporary, deletable after analysis, or expired, enforces a 24-hour maximum retention window, and records that raw screenshots are not retained as historical assets.
 - `server/confirm/validation.ts`: pure Task 8 validation for accepted confirmation rows. It converts accepted transaction rows into `SaveConfirmedTransactionInput`, accepted aggregate rows into `SaveConfirmedAggregateInput`, rejects incomplete accepted rows, ignores rejected rows, and computes user-facing markers for estimated, low-confidence, duplicate, overlap, and source-type states.
@@ -304,6 +310,7 @@ Task 10 boundary: report generation consumes only final `confirmedTransactions` 
 - Student setup has two top-level region paths only: `cn_mainland` and `study_abroad`.
 - Study-abroad setup stores the selected country/region in `abb_country_region` and a global three-letter currency code in `abb_currency`.
 - Upload access requires region, currency, period, and analysis session setup. Missing setup redirects to `/battle/region-currency` or `/battle/period`.
+- Upload submission tolerates Vercel Serverless mock-memory resets. If the `abb_analysis_session` cookie points to a missing mock session but region/currency/period cookies are still valid, the upload action recreates analysis session state and continues instead of surfacing a page-level server error.
 - Upload source types are `monthly_summary`, `representative_daily`, `category_summary`, and `single_transaction`.
 - The upload UI must not ask users to upload every daily bill screenshot. Monthly analysis screenshots and category summaries are first-class low-friction inputs.
 - Manual transactions are saved as manual confirmed transaction inputs for the current mock flow so users can continue even if extraction is unavailable.
@@ -328,6 +335,7 @@ Task 10 boundary: report generation consumes only final `confirmedTransactions` 
 - The battle flow nav is horizontally scrollable on mobile to avoid page-level horizontal overflow.
 - AI provider outputs must validate through `server/ai/schemas.ts` before consumers use them.
 - Mock persistence is in-memory and local-test oriented. It is compatible with the later Supabase boundary but does not survive process restarts.
+- Mock persistence remains in-memory and can reset across Vercel Serverless instances. Upload session recovery covers the setup-to-upload write path for hosted demos, but generated reports, history, and cross-device durability still require the Supabase provider.
 - Mock persistence enforces the first anonymous share-card rule at the provider layer by allowing one anonymous watermarked share card per report before login.
 - Mock persistence counts generated reports per anonymous session so report generation can enforce the one-anonymous-report rule before login.
 - Playwright runs with `workers: 1` because the current process-level mock persistence is intentionally simple and not parallel-safe for full e2e stateful flows.

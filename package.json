@@ -1,7 +1,26 @@
 {
   "name": "ai-budget-battle",
   "version": "0.1.0",
-  "private": true,
+  "description": "Chinese-first cyber spending personality report demo for students.",
+  "license": "MIT",
+  "author": "Yinzhi",
+  "homepage": "https://ai-budget-battle.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Yinzhi392/AI-Budget-Battle.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Yinzhi392/AI-Budget-Battle/issues"
+  },
+  "keywords": [
+    "nextjs",
+    "typescript",
+    "ai",
+    "budget",
+    "student",
+    "wrapped",
+    "demo"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",

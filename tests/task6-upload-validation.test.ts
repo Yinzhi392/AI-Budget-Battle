@@ -5,6 +5,8 @@ import {
   validateManualTransactionInput,
   validateScreenshotMetadataInput,
 } from "@/server/upload/validation";
+import { createMockPersistence } from "@/server/providers/mock-persistence";
+import { recoverUploadAnalysisSession } from "@/server/upload/session-recovery";
 
 describe("Task 6 upload validation", () => {
   it("validates a manual transaction with required amount, category, currency, and time", () => {
@@ -85,4 +87,60 @@ describe("Task 6 upload validation", () => {
       expect.arrayContaining(["milk_tea", "food_delivery", "campus_cafeteria"]),
     );
   });
+
+  it("recovers an upload analysis session when mock memory is missing but setup cookies remain", async () => {
+    const cookieStore = createCookieStore({
+      abb_anonymous_session: "anonymous_from_cookie",
+      abb_region: "cn_mainland",
+      abb_currency: "CNY",
+      abb_period_type: "this_month",
+      abb_period_start: "2026-05-01",
+      abb_period_end: "2026-05-23",
+      abb_analysis_session: "analysis_missing_after_serverless_reset",
+    });
+    const persistence = createMockPersistence();
+
+    const analysisSessionId = await recoverUploadAnalysisSession({
+      cookieStore,
+      persistence,
+      setup: {
+        anonymousSessionId: "anonymous_from_cookie",
+        region: "cn_mainland",
+        currency: "CNY",
+        periodType: "this_month",
+        periodStart: "2026-05-01",
+        periodEnd: "2026-05-23",
+        analysisSessionId: "analysis_missing_after_serverless_reset",
+      },
+    });
+
+    expect(analysisSessionId).toBe("analysis_1");
+    expect(cookieStore.get("abb_analysis_session")?.value).toBe("analysis_1");
+
+    await expect(
+      persistence.saveConfirmedTransactions(analysisSessionId!, [
+        validateManualTransactionInput({
+          amount: "10",
+          currency: "CNY",
+          category: "milk_tea",
+          merchant: "一点点",
+          transactionTime: "2026-05-21T12:00:00.000Z",
+        }),
+      ]),
+    ).resolves.toHaveLength(1);
+  });
 });
+
+function createCookieStore(initial: Record<string, string>) {
+  const store = new Map(Object.entries(initial));
+
+  return {
+    get(name: string) {
+      const value = store.get(name);
+      return value ? { value } : undefined;
+    },
+    set(name: string, value: string) {
+      store.set(name, value);
+    },
+  };
+}

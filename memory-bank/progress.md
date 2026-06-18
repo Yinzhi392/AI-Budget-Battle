@@ -3,11 +3,12 @@
 ## Current Status
 
 - Current branch: `codex/task-2-scaffold`.
-- Current milestone: Task 15 completed; first Vercel production deployment completed; latest Vercel production includes the mobile upload Step 3 overflow fix; waiting for user test verification before Task 16.
+- Current milestone: Task 15 completed; first Vercel production deployment completed; latest Vercel production includes the mobile upload Step 3 overflow fix and manual-only upload session recovery; GitHub repository has been prepared for public demo/open-source presentation; waiting for user test verification before Task 16.
 - The project now has typed domain models, Zod schemas, mock persistence, mock auth, mock AI extraction/report providers, anonymous setup cookies, auth cookies, region/currency selection, period selection, upload access guarding, low-friction screenshot upload UI, manual transaction input, category-total fallback input, a server-only mock/OpenAI extraction provider boundary with retry and timeout handling, a confirmation table for exact and estimated rows, a safe mock/OpenAI report generation boundary with retry and timeout handling, a Cyber Wrapped result story flow, animated generating/result visuals, share-card templates/export behavior, login gates for save/remove-watermark/additional export/repeated report generation, saved-report history, lightweight dashboard, mock report deletion, screenshot-retention status, and a Supabase schema/provider boundary behind server-only configuration.
 - Supabase migration and seed files now exist, but no remote Supabase project migration was executed in this local Codex session. Real OpenAI flow was not manually exercised because no valid local API key/reachable provider was configured. Real OCR queue behavior is still not implemented.
 - Production deployment is available at `https://ai-budget-battle.vercel.app` using the default mock-first provider configuration.
-- Latest production deployment includes the mobile upload Step 3 overflow fix.
+- Latest production deployment includes the mobile upload Step 3 overflow fix and manual-only upload session recovery.
+- Public GitHub repository target: `https://github.com/Yinzhi392/AI-Budget-Battle`.
 
 ## Completed Work
 
@@ -1067,6 +1068,43 @@ Verification:
 - Vercel production build: passed.
 - Vercel deployment state: `READY`, with `https://ai-budget-battle.vercel.app` aliased to the latest production deployment.
 
+### 2026-05-24 - Upload Manual-Only Server Error Recovery
+
+Status: completed and redeployed to Vercel production.
+
+Problem:
+
+- On the deployed Vercel app, users could hit a generic server error after adding only manual transactions from `/battle/upload`.
+- Root cause: the current hosted deployment still uses mock in-memory persistence by default. In Vercel Serverless, a later request can run on an instance that does not have the earlier mock analysis session in memory, while the browser still has `abb_analysis_session` and setup cookies. `saveConfirmedTransactions` then threw `Unknown analysis session`, which surfaced as a page-level server error.
+
+What changed:
+
+- Added `server/upload/session-recovery.ts`.
+  - It checks whether the cookie's analysis session still exists in persistence.
+  - If the session is missing but setup cookies still contain region, currency, and period state, it recreates a fresh analysis session and refreshes the `abb_analysis_session` cookie.
+  - If the anonymous session record is also missing, it recreates the anonymous session from the existing cookie or creates a new one.
+- Updated `app/battle/upload/actions.ts` so `saveUploadInputs` runs upload session recovery before saving screenshots, manual transactions, or category-total hints.
+- Manual-only upload can now continue to `/battle/confirm` even after a Vercel Serverless mock-memory reset, as long as the user's setup cookies are still present.
+- Added unit coverage for the exact failure mode: missing mock analysis memory plus existing setup cookies, followed by manual confirmed transaction persistence.
+- Redeployed the fix to Vercel production:
+  - Stable URL: `https://ai-budget-battle.vercel.app`
+  - Deployment URL: `https://ai-budget-battle-qkdo1xa2v-yinzhi-s-projects.vercel.app`
+  - Deployment id: `dpl_HyhU7QGCjiLLCcav6RfTyUa6k4A1`
+
+Verification:
+
+- `pnpm lint`: passed.
+- `pnpm exec vitest run tests/task6-upload-validation.test.ts`: passed with 6 tests.
+- `pnpm typecheck`: first sandbox run failed because TypeScript could not write `tsconfig.tsbuildinfo`; elevated rerun passed.
+- `pnpm exec playwright test e2e/upload-flow.spec.ts`: elevated run passed with 6 Chromium tests, including manual-only fallback coverage.
+- `pnpm build`: elevated run passed.
+- Vercel production build: passed.
+- Vercel deployment state: `READY`, with `https://ai-budget-battle.vercel.app` aliased to the latest production deployment.
+
+Remaining note:
+
+- This recovery layer makes the mock-first hosted demo more resilient, but durable multi-device/session persistence still requires enabling the Supabase provider with real server-side environment variables.
+
 ### 2026-05-23 - Post-Task-15 UI Polish Notes
 
 Status: in progress; do not start Task 16 until the user verifies the current UI behavior.
@@ -1140,6 +1178,47 @@ Verification already run for completed UI polish:
 - `pnpm typecheck`: passed after the share-card visible-watermark removal.
 - `pnpm exec vitest run tests/task11-share-card.test.tsx`: passed after the share-card visible-watermark removal.
 - Attempted a local Playwright screenshot check through `node_repl`, but that runtime could not import `playwright`; no dependency was installed or changed for this check.
+
+### 2026-06-18 - GitHub Open-Source Demo Repository Preparation
+
+Status: completed locally; prepared for commit and push to the public GitHub repository.
+
+What changed:
+
+- Replaced the default Next.js `README.md` with a project-specific open-source/demo README.
+  - Added live demo and GitHub repository links.
+  - Documented product positioning, feature scope, mock-first status, tech stack, project structure, setup commands, provider configuration, privacy notes, and development notes.
+- Added `LICENSE` with MIT License text.
+- Added `CONTRIBUTING.md` with local setup, verification commands, and project-specific contribution constraints.
+- Did not commit a GitHub Actions workflow in this publish pass because the available GitHub credential rejected pushes that create or update `.github/workflows/*` without `workflow` scope.
+  - The README and contributing guide still document the local verification commands.
+  - A workflow can be added later from GitHub UI or with a token that has `workflow` scope.
+- Updated `package.json` repository metadata:
+  - description
+  - MIT license
+  - author
+  - homepage
+  - repository URL
+  - issues URL
+  - keywords
+- Removed the incorrectly generated duplicate tracked persona asset path named like `:Users:mayinzhi:Desktop:AI-Budget-Battle:public:personas:/...`.
+  - Kept the real persona assets under `public/personas/*.png`.
+  - `.DS_Store` remains ignored by `.gitignore`.
+- Confirmed the GitHub repository is public through the GitHub API:
+  - `https://github.com/Yinzhi392/AI-Budget-Battle`
+
+Verification:
+
+- `pnpm lint`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm test`: passed with 12 test files and 64 tests.
+- `pnpm build`: passed with Next.js 16.2.6.
+- `git diff --check`: passed.
+- First `git push origin main` attempt was rejected by GitHub because the token lacked `workflow` scope for `.github/workflows/ci.yml`; the workflow file was removed from the final publish commit.
+
+Next status:
+
+- Push the prepared complete demo to GitHub `main` so the repository homepage shows the usable project instead of the old document-only main branch.
 
 ## Next Step
 

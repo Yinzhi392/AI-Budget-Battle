@@ -4,7 +4,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { mockPersistence } from "@/server/providers/mock-singleton";
 import { runExtraction } from "@/server/providers/ai-provider";
+import { readAuthCookieState } from "@/server/auth/session";
 import { getSetupRedirectTarget, readSetupCookieState } from "@/server/setup/session";
+import { recoverUploadAnalysisSession } from "@/server/upload/session-recovery";
 import {
   validateCategoryTotalInput,
   validateManualTransactionInput,
@@ -22,12 +24,18 @@ export async function saveUploadInputs(formData: FormData) {
   const cookieStore = await cookies();
   const setup = readSetupCookieState(cookieStore);
   const redirectTarget = getSetupRedirectTarget(setup);
+  const auth = readAuthCookieState(cookieStore);
 
   if (redirectTarget) {
     redirect(redirectTarget);
   }
 
-  const analysisSessionId = setup.analysisSessionId;
+  const analysisSessionId = await recoverUploadAnalysisSession({
+    cookieStore,
+    persistence: mockPersistence,
+    setup,
+    userId: auth.userId,
+  });
   if (!analysisSessionId) {
     redirect("/battle/period");
   }
