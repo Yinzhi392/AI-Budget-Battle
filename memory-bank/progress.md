@@ -1239,6 +1239,7 @@ What changed:
   - Replaced the development-placeholder look with a compact brand header, softer surfaces, consistent radii, improved typography, and responsive navigation.
   - Rewrote generic `Step 01` style eyebrows as functional Chinese guidance.
 - Added semantic metadata, Open Graph configuration, Geist/Geist Mono through `next/font`, focus-visible styling, and a reduced-motion fallback.
+- Declared the root smooth-scroll behavior for Next.js route transitions so development and production navigation share the same documented scroll contract.
 - Restored a real visible watermark inside exported share-card DOM previews.
   - This closes the earlier mismatch where anonymous exports were described and modeled as watermarked while the rendered card omitted the watermark.
 - Fixed Vitest alias resolution for workspace paths containing spaces by using `fileURLToPath` instead of URL pathname text containing `%20`.
