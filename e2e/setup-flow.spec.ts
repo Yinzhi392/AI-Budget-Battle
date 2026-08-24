@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test.describe("Task 5 setup flow", () => {
   test("anonymous setup persists through refresh", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("link", { name: /开始战斗/ }).click();
+    await page.getByRole("link", { name: /开始战斗/ }).first().click();
 
     await expect(page).toHaveURL(/\/battle\/region-currency$/);
     await expect(page.getByRole("heading", { name: "选择战区和货币" })).toBeVisible();

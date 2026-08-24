@@ -1223,3 +1223,39 @@ Next status:
 ## Next Step
 
 Stop here until the user verifies Task 15 tests and behavior. After user verification, proceed to Task 16 from `memory-bank/implementation-plan.md`.
+
+### 2026-08-24 - Premium Landing and GitHub Presentation Redesign
+
+Status: completed locally and ready for GitHub delivery.
+
+What changed:
+
+- Replaced the generic landing route shell with a dedicated, production-style homepage.
+  - Added an asymmetric hero, concise Chinese positioning, clear entry CTA, real product sample, low-friction process explanation, privacy commitments, and final conversion section.
+  - Added two original editorial campaign images and a production screenshot for the GitHub README.
+  - Locked the landing palette to charcoal, silver-grey, and one acid-lime accent.
+  - Added restrained Motion entry transitions with reduced-motion support.
+- Rebuilt the shared `BattleShell` visual system used by setup, upload, confirmation, generation, result, share, auth, history, and dashboard routes.
+  - Replaced the development-placeholder look with a compact brand header, softer surfaces, consistent radii, improved typography, and responsive navigation.
+  - Rewrote generic `Step 01` style eyebrows as functional Chinese guidance.
+- Added semantic metadata, Open Graph configuration, Geist/Geist Mono through `next/font`, focus-visible styling, and a reduced-motion fallback.
+- Restored a real visible watermark inside exported share-card DOM previews.
+  - This closes the earlier mismatch where anonymous exports were described and modeled as watermarked while the rendered card omitted the watermark.
+- Fixed Vitest alias resolution for workspace paths containing spaces by using `fileURLToPath` instead of URL pathname text containing `%20`.
+- Rebuilt `README.md` as a Chinese-first GitHub project page with a production preview image, live-demo link, product flow, current capabilities, architecture, provider setup, privacy notes, and contribution path.
+- Updated E2E assertions to match the redesigned landing content and unambiguous entry-link selection.
+
+Verification:
+
+- `pnpm lint`: passed.
+- `pnpm typecheck`: passed.
+- `pnpm test`: passed with 12 files and 64 tests.
+- `pnpm build`: passed with all 13 routes generated or server-rendered successfully.
+- `pnpm e2e`: passed with 36 Chromium tests.
+- Browser visual review completed at desktop 1440x1000 and mobile 390x844.
+- Additional section-level screenshots reviewed for process, sample report, privacy, and mobile report layouts.
+
+Remaining:
+
+- Commit the reviewed files and fast-forward GitHub `main`.
+- Confirm the GitHub repository page and production deployment after push.

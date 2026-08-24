@@ -46,7 +46,7 @@ export const routePages = {
     ],
   },
   regionCurrency: {
-    eyebrow: "Step 01",
+    eyebrow: "先确定你的消费语境",
     title: "选择战区和货币",
     description:
       "默认使用中国大陆和人民币；留学生可继续选择所在国家或地区与使用货币。",
@@ -68,7 +68,7 @@ export const routePages = {
     ],
   },
   period: {
-    eyebrow: "Step 02",
+    eyebrow: "这份战报看多长时间",
     title: "选择分析周期",
     description:
       "本周、本月和自定义周期会贯穿确认页、战报故事和分享卡片。",
@@ -90,7 +90,7 @@ export const routePages = {
     ],
   },
   upload: {
-    eyebrow: "Step 03",
+    eyebrow: "不需要上传完整账本",
     title: "上传账单或手动输入",
     description:
       "优先支持月度分析图、代表性截图和分类汇总；也可以直接手动添加交易或分类总额。",
@@ -112,7 +112,7 @@ export const routePages = {
     ],
   },
   confirm: {
-    eyebrow: "Step 04",
+    eyebrow: "你确认，AI 才分析",
     title: "确认交易记录",
     description:
       "确认表会成为数据质量闸门；只有用户确认后的交易会进入报告生成。",
@@ -134,7 +134,7 @@ export const routePages = {
     ],
   },
   generating: {
-    eyebrow: "Step 05",
+    eyebrow: "正在整理你的消费线索",
     title: "准备生成战报",
     description:
       "点击下方按钮开始生成，生成完成后会自动打开战报页。",
@@ -156,7 +156,7 @@ export const routePages = {
     ],
   },
   result: {
-    eyebrow: "Step 06",
+    eyebrow: "你的消费人格已揭晓",
     title: "Cyber Wrapped 战报",
     description:
       "结果页会以故事流展示人格、吐槽、分数、基准对比、风险预测和挑战标签。",
@@ -178,7 +178,7 @@ export const routePages = {
     ],
   },
   share: {
-    eyebrow: "Step 07",
+    eyebrow: "把最有意思的一页带走",
     title: "分享卡片编辑器",
     description:
       "分享卡将支持小红书方图、竖图和微信朋友圈格式，匿名导出带水印。",
@@ -200,7 +200,7 @@ export const routePages = {
     ],
   },
   auth: {
-    eyebrow: "Account Gate",
+    eyebrow: "先体验，再决定是否留下",
     title: "登录后继续保存",
     description:
       "登录页会在保存历史、去水印、追加导出或重复生成时出现。",
@@ -222,7 +222,7 @@ export const routePages = {
     ],
   },
   history: {
-    eyebrow: "Saved Reports",
+    eyebrow: "你保存过的消费人格",
     title: "历史战报",
     description:
       "历史页会让登录用户重新打开、分享或删除已保存战报，不存长期原始截图。",
@@ -244,7 +244,7 @@ export const routePages = {
     ],
   },
   dashboard: {
-    eyebrow: "Details",
+    eyebrow: "故事之外的必要细节",
     title: "轻量数据面板",
     description:
       "面板只提供故事流后的支持细节，避免变成密集的传统记账 dashboard。",

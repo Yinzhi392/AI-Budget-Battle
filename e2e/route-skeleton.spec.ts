@@ -56,7 +56,7 @@ test.describe("Task 3 route skeleton", () => {
         await expect(page.getByText(/当前页面只承载 Task 3/)).toBeHidden();
         await expect(page.getByText("中文优先")).toBeHidden();
         await expect(page.getByText("匿名先体验")).toBeHidden();
-        await expect(page.getByText("分享卡默认隐藏商户明细")).toBeHidden();
+        await expect(page.getByText("分享卡默认隐藏商户明细")).toBeVisible();
       }
 
       if (route.path === "/battle/generating") {

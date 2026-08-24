@@ -1,31 +1,36 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050607;
-  --foreground: #f4f7fb;
-  --muted: #0f1418;
-  --neon-green: #61f2a2;
-  --electric-blue: #47c8ff;
-  --signal-orange: #ff9f43;
+  --background: #090a0a;
+  --foreground: #f3f5ef;
+  --muted: #131512;
+  --accent: #c8ff54;
+  --accent-soft: #d8ff82;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
-  --color-neon-green: var(--neon-green);
-  --color-electric-blue: var(--electric-blue);
-  --color-signal-orange: var(--signal-orange);
-  --font-sans: ui-sans-serif, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
-    "Noto Sans CJK SC", sans-serif;
-  --font-mono: "SFMono-Regular", "Roboto Mono", "Cascadia Code", monospace;
+  --color-neon-green: var(--accent);
+  --color-electric-blue: var(--accent);
+  --color-signal-orange: var(--accent);
+  --font-sans: var(--font-geist-sans), "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-mono: var(--font-geist-mono), "SFMono-Regular", "Roboto Mono",
+    "Cascadia Code", monospace;
+}
+
+html {
+  background: var(--background);
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: ui-sans-serif, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
-    "Noto Sans CJK SC", sans-serif;
+  font-family: var(--font-geist-sans), "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   overflow-x: hidden;
   text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -51,20 +56,40 @@ select,
 textarea,
 button {
   max-width: 100%;
+  font: inherit;
 }
 
 ::selection {
-  background: rgba(97, 242, 162, 0.35);
-  color: #ffffff;
+  background: rgba(200, 255, 84, 0.35);
+  color: #11130e;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.site-atmosphere {
+  background:
+    radial-gradient(circle at 78% 9%, rgba(200, 255, 84, 0.08), transparent 28%),
+    radial-gradient(circle at 12% 68%, rgba(200, 255, 84, 0.035), transparent 24%);
+}
+
+.site-atmosphere::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
 }
 
 .cyber-grid {
   background-image:
-    linear-gradient(rgba(71, 200, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(97, 242, 162, 0.08) 1px, transparent 1px),
-    radial-gradient(circle at 20% 8%, rgba(97, 242, 162, 0.16), transparent 32%),
-    radial-gradient(circle at 86% 76%, rgba(255, 159, 67, 0.14), transparent 30%);
-  background-size: 44px 44px, 44px 44px, 100% 100%, 100% 100%;
+    linear-gradient(rgba(200, 255, 84, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 255, 84, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 76% 8%, rgba(200, 255, 84, 0.09), transparent 30%);
+  background-size: 56px 56px, 56px 56px, 100% 100%;
   mask-image: linear-gradient(to bottom, black, transparent 92%);
 }
 
@@ -77,6 +102,52 @@ button {
     transparent 8px
   );
   opacity: 0.16;
+}
+
+.battle-content > form,
+.battle-content > section,
+.battle-content > article,
+.battle-content form > section {
+  border-radius: 24px;
+}
+
+.battle-content input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),
+.battle-content select,
+.battle-content textarea {
+  border-radius: 12px !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  background: #10120f !important;
+}
+
+.battle-content button,
+.battle-content a[role="button"] {
+  border-radius: 999px;
+}
+
+.battle-content button:active,
+.battle-content a[role="button"]:active {
+  transform: scale(0.98);
+}
+
+.battle-content form > section,
+.battle-content form > div[class*="border"],
+.battle-content label[class*="border"] {
+  border-radius: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @keyframes scan {

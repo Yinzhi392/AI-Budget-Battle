@@ -1,119 +1,80 @@
+<div align="center">
+
 # AI Budget Battle
 
-AI Budget Battle is a Chinese-first, cyber-style spending personality report demo for students.
+**把几张消费记录，变成一份好笑、清晰、能分享的人格战报。**
 
-It turns lightweight spending input into a playful "Cyber Wrapped" report: upload a monthly summary screenshot, add a few representative transactions, confirm the recognized data, and generate a shareable spending personality card.
+[在线体验](https://ai-budget-battle.vercel.app) · [产品文档](./memory-bank/design-document.md) · [参与贡献](./CONTRIBUTING.md)
 
-Live demo: https://ai-budget-battle.vercel.app
+</div>
 
-GitHub repo: https://github.com/Yinzhi392/AI-Budget-Battle
+![AI Budget Battle 首页预览](./public/editorial/landing-preview.jpg)
 
-## What This Demo Shows
+AI Budget Battle 是一个面向学生的中文消费人格产品。用户可以上传月度总结、几张代表性账单，或手动补充消费记录；确认识别结果后，系统会生成一套 Cyber Wrapped 风格的人格、吐槽、分数和分享卡。
 
-- Low-friction spending input for students
-- China mainland and study-abroad setup paths
-- Monthly summary screenshots, representative screenshots, manual transactions, and category total hints
-- Mock-first AI extraction and report generation
-- Optional server-only OpenAI provider boundaries
-- Confirmation table for exact rows and estimated category totals
-- Cyber Wrapped result story flow
-- Persona illustrations and animated result sections
-- Xiaohongshu and WeChat-style share card editor
-- Mock auth gates for save, history, repeated generation, and watermark removal
-- Supabase schema and provider boundary for future durable persistence
+它不是传统记账工具，也不做真实校园排名。这个项目想验证一个更简单的问题：学生会不会愿意确认少量消费数据，然后分享一份有趣但不过界的 AI 消费人格报告？
 
-## Product Positioning
+## 体验流程
 
-This is not a banking dashboard or accounting tool. The MVP prioritizes participation, fun, and shareability over audit-level financial accuracy.
+| 输入 | 确认 | 揭晓 | 分享 |
+|---|---|---|---|
+| 上传少量截图或手动补充 | 修改金额、分类和估算项 | 浏览 8 屏人格故事 | 导出小红书或朋友圈卡片 |
 
-The current demo is designed to answer one product question:
+整个流程默认匿名可体验。保存历史、去水印、追加导出和重复生成时才需要登录。
 
-> Will students enjoy confirming lightweight spending data and sharing an AI-generated spending personality report?
+## 当前能力
 
-## Current Status
+- 中国大陆学生与留学生两条初始化路径
+- 月度总结、代表性日账单、分类汇总和手动输入
+- Mock-first AI 识别与报告生成，完整流程无需真实密钥
+- 可编辑的交易确认与低置信度提示
+- 8 屏 Cyber Wrapped 消费人格故事流
+- 小红书方图、竖图和微信朋友圈分享卡
+- 匿名体验、登录门槛、历史战报和轻量数据面板
+- 可选的 OpenAI 与 Supabase 服务端 provider
+- Vitest 单元测试与 Playwright 端到端回归
 
-The hosted demo is mock-first by default:
+## 设计方向
 
-- Persistence defaults to in-memory mock storage.
-- Auth defaults to mock auth.
-- AI extraction/report generation defaults to mock providers.
-- Supabase and OpenAI support exist behind server-only provider switches, but are not required for local demo usage.
+视觉系统使用炭黑、银灰和单一酸性青柠绿。首页采用非对称编辑式布局，流程页保留高密度赛博信息感，但避免做成传统金融 dashboard。
 
-Because mock persistence is in-memory, hosted sessions may reset across Vercel Serverless instances. The upload flow includes a recovery bridge for setup-to-upload submissions, but true cross-device and long-term persistence requires enabling Supabase.
+产品文案遵循三条边界：
 
-## Tech Stack
+- 可以调侃消费习惯，不攻击身份、收入或家庭背景。
+- 只把预设数据称为学生基准，不伪装成真实排名。
+- 分享卡默认隐藏商户和逐笔交易明细。
 
-- Next.js App Router
-- React
-- TypeScript
-- Tailwind CSS
-- Motion
-- Recharts
-- Zod
-- React Hook Form
-- Supabase client/provider boundary
-- OpenAI SDK provider boundary
-- Vitest
-- Playwright
-- Vercel
+## 技术栈
 
-## Project Structure
+| 层级 | 方案 |
+|---|---|
+| Web | Next.js App Router, React, TypeScript |
+| UI | Tailwind CSS, Motion, Recharts |
+| 表单与校验 | React Hook Form, Zod |
+| 数据与登录 | Mock providers, Supabase boundary |
+| AI | Mock AI, optional OpenAI provider |
+| 分享卡 | HTML/CSS templates, html-to-image |
+| 测试 | Vitest, Playwright |
+| 部署 | Vercel |
 
-```text
-app/                     Next.js routes and Server Actions
-components/              Shared UI components and report/share-card views
-lib/                     View models, utilities, persona mappings
-server/                  Provider boundaries, validation, setup, reports, storage
-types/                   Shared domain types
-tests/                   Vitest unit tests
-e2e/                     Playwright browser tests
-supabase/                Migration and seed files
-memory-bank/             Product, architecture, implementation, and progress notes
-public/personas/         Persona character assets used by reports and share cards
-```
+## 本地启动
 
-## Getting Started
+### 环境要求
 
-### Requirements
-
-- Node.js 20 or newer
+- Node.js 20 或更高版本
 - pnpm 11.x
 
-### Install
+### 安装与运行
 
 ```bash
 pnpm install
-```
-
-### Configure Environment
-
-Copy the example environment file:
-
-```bash
 cp .env.example .env.local
-```
-
-For the default local mock demo, no real Supabase or OpenAI keys are required.
-
-Default provider settings:
-
-```bash
-PERSISTENCE_PROVIDER=mock
-AUTH_PROVIDER=mock
-AI_PROVIDER=mock
-AI_REPORT_PROVIDER=mock
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
-### Run Locally
-
-```bash
 pnpm dev
 ```
 
-Open http://localhost:3000.
+打开 [http://localhost:3000](http://localhost:3000)。默认 Mock 模式不需要 Supabase 或 OpenAI 密钥。
 
-## Useful Scripts
+### 质量检查
 
 ```bash
 pnpm lint
@@ -123,32 +84,29 @@ pnpm e2e
 pnpm build
 ```
 
-## Optional Real Providers
+## Provider 模式
 
-### OpenAI
+默认配置适合本地演示：
 
-Real AI providers are server-only and disabled by default.
+```bash
+PERSISTENCE_PROVIDER=mock
+AUTH_PROVIDER=mock
+AI_PROVIDER=mock
+AI_REPORT_PROVIDER=mock
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+如果要启用真实 AI，请只在服务端设置 OpenAI 变量：
 
 ```bash
 AI_PROVIDER=openai
-OPENAI_EXTRACTION_MODEL=your-extraction-model
 AI_REPORT_PROVIDER=openai
+OPENAI_EXTRACTION_MODEL=your-extraction-model
 OPENAI_REPORT_MODEL=your-report-model
 OPENAI_API_KEY=your-server-side-key
 ```
 
-Do not expose OpenAI keys through `NEXT_PUBLIC_*` variables.
-
-### Supabase
-
-Supabase is supported through a provider boundary and schema files:
-
-```text
-supabase/migrations/20260522140000_task14_core_schema.sql
-supabase/seed.sql
-```
-
-To enable Supabase persistence/auth, configure the required Supabase environment variables and switch:
+如果要启用持久化和真实登录，请配置 Supabase 并切换 provider：
 
 ```bash
 PERSISTENCE_PROVIDER=supabase
@@ -158,24 +116,33 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
 
-## Privacy Notes
+数据库迁移与种子文件位于 [`supabase/`](./supabase)。不要把服务端密钥放进 `NEXT_PUBLIC_*` 变量。
 
-- Raw uploaded screenshots are treated as temporary analysis assets.
-- Share cards and dashboards avoid exposing raw merchant details by default.
-- Current hosted demo uses mock persistence, so it is best treated as a product demo rather than a production data store.
-- Do not upload sensitive financial records to a public demo deployment.
+## 项目结构
 
-## Development Notes
+```text
+app/                     页面、Route Handlers 与 Server Actions
+components/              共用 UI、故事流与分享卡
+lib/                     视图模型和产品工具函数
+server/                  Provider、校验、报告、存储与会话边界
+types/                   共享领域类型
+tests/                   Vitest 单元测试
+e2e/                     Playwright 浏览器测试
+supabase/                数据库迁移与种子数据
+memory-bank/             产品、架构、计划与进度记录
+public/editorial/        首页视觉与仓库预览素材
+public/personas/         消费人格角色素材
+```
 
-This repo keeps a `memory-bank/` folder with product decisions, architecture notes, implementation plans, and progress logs. It is intentionally included so reviewers can understand how the demo evolved and what is still mocked.
+## 隐私与演示说明
 
-Before making product or architecture changes, read:
+- 原始截图按临时分析资产处理，目标保留时间不超过 24 小时。
+- 当前线上演示默认使用内存 Mock persistence，Serverless 实例切换可能重置会话。
+- 不要向公开演示上传敏感金融材料。可以使用手动输入体验完整流程。
+- 真正的跨设备历史记录和长期持久化需要启用 Supabase provider。
 
-- `memory-bank/design-document.md`
-- `memory-bank/tech-stack.md`
-- `memory-bank/architecture.md`
-- `memory-bank/progress.md`
+## 贡献与许可
 
-## License
+提交改动前请阅读 [`CONTRIBUTING.md`](./CONTRIBUTING.md)，并同步维护 `memory-bank/` 中的项目记录。
 
-MIT License. See `LICENSE`.
+本项目使用 [MIT License](./LICENSE)。

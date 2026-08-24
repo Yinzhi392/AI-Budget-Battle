@@ -217,6 +217,9 @@ const ShareCardPreview = forwardRef<HTMLDivElement, { card: ShareCardViewModel }
     <div className="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-cyan-300/10 to-transparent" />
     <div className="absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-sky-300/10 to-transparent" />
     <div className="absolute inset-x-0 top-0 h-1 bg-emerald-300" />
+    <p className="absolute bottom-2 right-3 z-20 text-[9px] font-bold tracking-[0.08em] text-white/50">
+      {card.watermark}
+    </p>
     <div className="absolute inset-x-5 top-[58%] h-px bg-gradient-to-r from-transparent via-cyan-200/14 to-transparent" />
     <div className="absolute -right-16 -top-16 size-40 rounded-full border border-cyan-200/10" />
     <div className="absolute -bottom-20 -left-16 size-48 rounded-full border border-emerald-200/10" />

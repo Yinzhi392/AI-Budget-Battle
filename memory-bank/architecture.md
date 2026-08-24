@@ -507,3 +507,33 @@ Current smoke coverage:
 ## Next Architectural Work
 
 Wait for user verification before Task 16. Task 16 should add Vercel Analytics, Sentry, and error boundaries. Do not start Task 16 until the user confirms Task 15.
+
+## 2026-08-24 Presentation Architecture Update
+
+### Landing boundary
+
+- `/` now renders `components/landing-page.tsx` instead of routing through the generic `BattleShell`.
+- The landing page is a server-rendered composition for content, images, metadata, and links.
+- `components/landing-motion.tsx` is the isolated client leaf for Motion behavior. Continuous pointer or scroll state is not stored in React state.
+- Marketing imagery lives under `public/editorial/`:
+  - `budget-battle-hero.jpg`
+  - `budget-battle-process.jpg`
+  - `landing-preview.jpg`
+- The landing page uses one fixed dark theme with a single acid-lime accent. Inner product routes retain their semantic green, blue, and orange states where selection, warning, or confidence meaning requires them.
+
+### Product-shell boundary
+
+- `components/battle-shell.tsx` remains the shared frame for every non-landing route.
+- It owns the compact brand header, battle-flow navigation, page heading hierarchy, optional action/highlight/sidebar regions, responsive width containment, and footer attribution.
+- Form and content modules remain route-owned; the shell only supplies presentation and navigation structure.
+- `app/globals.css` supplies global brand tokens, focus treatment, reduced-motion fallback, background atmosphere, and shared battle-content radii/field treatment.
+
+### Share-card rendering contract
+
+- `ShareCardViewModel.watermark` must be rendered inside the DOM node referenced by `html-to-image`.
+- Anonymous export claims are therefore visible in both preview and generated image output, not only stored in provider metadata.
+
+### Test-path portability
+
+- `vitest.config.ts` converts the config URL with `fileURLToPath` before registering the `@` alias.
+- This keeps test resolution portable when the repository path contains spaces or other URL-encoded characters.

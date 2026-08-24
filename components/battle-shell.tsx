@@ -1,15 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, CircleDot, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, ChevronRight, LockKeyhole, Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
 import { battleFlow, type RoutePageContent } from "@/lib/route-content";
 import { cn } from "@/lib/utils";
-
-const accentClasses = {
-  green: "border-emerald-300/35 bg-emerald-300/10 text-emerald-100 shadow-[0_0_24px_rgba(52,211,153,0.12)]",
-  blue: "border-sky-300/35 bg-sky-300/10 text-sky-100 shadow-[0_0_24px_rgba(56,189,248,0.12)]",
-  orange:
-    "border-orange-300/35 bg-orange-300/10 text-orange-100 shadow-[0_0_24px_rgba(251,146,60,0.12)]",
-};
 
 type BattleShellProps = {
   content: RoutePageContent;
@@ -29,34 +22,30 @@ export function BattleShell({
   showSidebar = true,
 }: BattleShellProps) {
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
-      <div className="cyber-grid pointer-events-none absolute inset-0" />
-      <div className="scanline pointer-events-none absolute inset-0" />
-      <section className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-5 sm:px-8 sm:py-6 lg:px-10">
-        <header className="flex flex-col gap-5 border-b border-white/10 pb-5 lg:flex-row lg:items-center lg:justify-between">
-          <Link href="/" className="group inline-flex min-w-0 items-center gap-3">
-            <span className="grid size-10 shrink-0 place-items-center border border-emerald-300/40 bg-emerald-300/10 text-emerald-200 shadow-[0_0_26px_rgba(52,211,153,0.2)]">
-              <Sparkles className="size-5" aria-hidden="true" />
+    <main className="relative min-h-[100dvh] overflow-x-hidden bg-background text-foreground">
+      <div className="cyber-grid pointer-events-none fixed inset-0" aria-hidden="true" />
+      <div className="site-atmosphere pointer-events-none fixed inset-0" aria-hidden="true" />
+
+      <div className="relative mx-auto flex min-h-[100dvh] w-full max-w-[1440px] flex-col px-4 sm:px-7 lg:px-10">
+        <header className="flex min-h-[72px] items-center justify-between gap-5 border-b border-white/10 py-3">
+          <Link href="/" className="group inline-flex shrink-0 items-center gap-3" aria-label="返回 AI Budget Battle 首页">
+            <span className="grid size-10 place-items-center rounded-[14px] bg-[#c8ff54] text-[#10120d] transition-transform duration-300 group-hover:-rotate-3 group-active:scale-[0.96]">
+              <Sparkles className="size-5" strokeWidth={2} aria-hidden="true" />
             </span>
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold uppercase text-white">
-                AI Budget Battle
-              </span>
-              <span className="block truncate text-xs text-zinc-400">
-                Cyber spending report
-              </span>
+            <span className="hidden text-sm font-bold tracking-[-0.02em] text-white sm:block">
+              AI Budget Battle
             </span>
           </Link>
 
           <nav
-            aria-label="Battle flow"
-            className="flex max-w-full gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch]"
+            aria-label="战斗流程"
+            className="flex max-w-full items-center gap-1 overflow-x-auto rounded-full border border-white/10 bg-white/[0.035] p-1 [-webkit-overflow-scrolling:touch]"
           >
             {battleFlow.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="shrink-0 border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-medium text-zinc-300 transition hover:border-sky-300/45 hover:text-white"
+                className="shrink-0 rounded-full px-3 py-2 text-xs font-semibold text-[#979d94] transition hover:bg-white/[0.07] hover:text-white sm:px-4"
               >
                 {item.label}
               </Link>
@@ -66,94 +55,85 @@ export function BattleShell({
 
         <div
           className={cn(
-            "grid min-w-0 flex-1 items-center gap-8 py-8 sm:py-10 lg:py-14",
+            "grid min-w-0 flex-1 items-start gap-8 py-12 sm:py-16 lg:py-20",
             showSidebar
-              ? "lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.75fr)]"
+              ? "lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.4fr)] lg:gap-16"
               : "lg:grid-cols-1",
           )}
         >
-          <section className="min-w-0 max-w-4xl">
+          <section className="min-w-0 max-w-5xl">
             {showStatusBadge ? (
-              <div className="mb-6 inline-flex items-center gap-2 border border-orange-300/30 bg-orange-300/10 px-3 py-2 text-xs font-semibold uppercase text-orange-100">
-                <CircleDot className="size-4" aria-hidden="true" />
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#c8ff54]/20 bg-[#c8ff54]/10 px-3 py-2 text-xs font-semibold text-[#ddff99]">
+                <Sparkles className="size-4" strokeWidth={1.8} aria-hidden="true" />
                 {content.statusLabel}
               </div>
             ) : null}
 
-            <p className="mb-4 text-sm font-semibold uppercase text-emerald-300">
+            <p className="mb-5 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[#c8ff54]">
               {content.eyebrow}
             </p>
-            <h1 className="max-w-4xl break-words text-4xl font-black leading-[1.02] text-white sm:text-6xl sm:leading-[0.98] lg:text-8xl">
+            <h1 className="max-w-4xl break-words text-4xl font-black leading-[0.98] tracking-[-0.055em] text-white sm:text-6xl lg:text-7xl">
               {content.title}
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-zinc-300 sm:text-lg">
+            <p className="mt-6 max-w-2xl text-base leading-7 text-[#aeb4aa] sm:text-lg sm:leading-8">
               {content.description}
             </p>
 
             {showActions ? (
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-8 flex flex-wrap gap-3">
                 {content.primaryAction ? (
                   <Link
                     href={content.primaryAction.href}
-                    className="inline-flex min-h-12 items-center justify-center gap-2 bg-emerald-300 px-5 py-3 text-sm font-bold text-zinc-950 transition hover:bg-emerald-200"
+                    className="inline-flex min-h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#c8ff54] px-6 text-sm font-extrabold text-[#10120d] transition hover:bg-[#d8ff82] active:scale-[0.98]"
                   >
                     {content.primaryAction.label}
-                    <ArrowRight className="size-4" aria-hidden="true" />
+                    <ArrowRight className="size-4" strokeWidth={2} aria-hidden="true" />
                   </Link>
                 ) : null}
                 {content.secondaryAction ? (
                   <Link
                     href={content.secondaryAction.href}
-                    className="inline-flex min-h-12 items-center justify-center border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-bold text-white transition hover:border-white/35 hover:bg-white/[0.08]"
+                    className="inline-flex min-h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/14 bg-white/[0.04] px-6 text-sm font-bold text-white transition hover:border-white/25 hover:bg-white/[0.08] active:scale-[0.98]"
                   >
                     {content.secondaryAction.label}
+                    <ChevronRight className="size-4" strokeWidth={2} aria-hidden="true" />
                   </Link>
                 ) : null}
               </div>
             ) : null}
 
-            {children ? <div className="mt-8 min-w-0">{children}</div> : null}
+            {children ? (
+              <div className="battle-content mt-9 min-w-0" data-battle-content>
+                {children}
+              </div>
+            ) : null}
 
             {showHighlights ? (
-              <ul
+              <div
                 className={cn(
-                  "mt-8 grid gap-3 text-sm text-zinc-300",
-                  content.highlights.length === 1 ? "sm:grid-cols-1" : "sm:grid-cols-3",
+                  "mt-10 grid border-t border-white/10 pt-5 text-sm text-[#aeb4aa]",
+                  content.highlights.length === 1 ? "gap-2" : "gap-4 sm:grid-cols-3",
                 )}
               >
                 {content.highlights.map((highlight) => (
-                  <li
-                    key={highlight}
-                    className="flex min-h-14 items-center gap-3 border border-white/10 bg-zinc-950/50 px-4 py-3"
-                  >
-                    <ShieldCheck className="size-4 shrink-0 text-sky-300" aria-hidden="true" />
+                  <div key={highlight} className="flex items-center gap-3">
+                    <LockKeyhole className="size-4 shrink-0 text-[#c8ff54]" strokeWidth={1.8} aria-hidden="true" />
                     <span>{highlight}</span>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             ) : null}
           </section>
 
           {showSidebar ? (
-            <aside className="grid gap-4">
-              <div className="border border-white/10 bg-zinc-950/72 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.38)] backdrop-blur">
-                <p className="text-xs font-semibold uppercase text-zinc-500">
-                  Flow status
-                </p>
-                <p className="mt-2 text-2xl font-black text-white">MVP Route Map</p>
-                <div className="mt-5 grid gap-3">
+            <aside className="grid gap-4 lg:sticky lg:top-8">
+              <div className="rounded-[24px] border border-white/10 bg-[#11130f]/88 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:p-6">
+                <p className="text-sm font-semibold text-[#939990]">本页概览</p>
+                <div className="mt-4">
                   {content.panels.map((panel) => (
-                    <div
-                      key={panel.label}
-                      className={cn(
-                        "min-h-24 border p-4",
-                        accentClasses[panel.accent],
-                      )}
-                    >
-                      <p className="text-xs font-semibold uppercase opacity-70">
-                        {panel.label}
-                      </p>
-                      <p className="mt-2 text-xl font-black leading-tight">
+                    <div key={panel.label} className="border-b border-white/10 py-5 first:pt-0 last:border-b-0 last:pb-0">
+                      <p className="text-xs font-medium text-[#787e75]">{panel.label}</p>
+                      <p className="mt-2 text-lg font-bold leading-snug tracking-[-0.02em] text-white">
                         {panel.value}
                       </p>
                     </div>
@@ -161,13 +141,18 @@ export function BattleShell({
                 </div>
               </div>
 
-              <div className="border border-sky-300/20 bg-sky-300/10 p-4 text-sm leading-7 text-sky-100">
-                当前页面只承载 Task 3 的骨架和视觉基调，业务状态、表单、AI 和持久化会在后续任务接入。
+              <div className="rounded-[20px] border border-[#c8ff54]/16 bg-[#c8ff54]/[0.07] p-5 text-sm leading-7 text-[#d7deb0]">
+                当前演示默认使用 Mock 数据，不需要上传真实敏感账单也能体验完整流程。
               </div>
             </aside>
           ) : null}
         </div>
-      </section>
+
+        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 py-7 text-xs text-[#72786f]">
+          <span>AI Budget Battle</span>
+          <span>Developer: Yinzhi</span>
+        </footer>
+      </div>
     </main>
   );
 }
