@@ -1255,7 +1255,10 @@ Verification:
 - Browser visual review completed at desktop 1440x1000 and mobile 390x844.
 - Additional section-level screenshots reviewed for process, sample report, privacy, and mobile report layouts.
 
-Remaining:
+Delivery:
 
-- Commit the reviewed files and fast-forward GitHub `main`.
-- Confirm the GitHub repository page and production deployment after push.
+- Committed the redesign as `abdcff2` (`Redesign AI Budget Battle experience`).
+- Fast-forwarded GitHub `main` from `b4126d7` to `abdcff2` through the already-authorized GitHub SSH key on port 443.
+- Verified the remote `main` hash and fetched the redesigned README from GitHub successfully.
+- Replaced the invalid local HTTPS remote with the verified SSH 443 origin URL for future repository operations.
+- The Vercel production alias had not switched to the redesigned page within the first 50-second post-push observation window, so production deployment remains pending external GitHub/Vercel automation.
